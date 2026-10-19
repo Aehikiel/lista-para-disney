@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Lista para Disney</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: phone-first study deck. Header, sticky filter rail, then stacked order tickets; each answer sits below a perforated tear line. */
+:root {
+  --bg: #EEF3F2;
+  --surface: #FFFFFF;
+  --answer: #F5F9F8;
+  --ink: #14232A;
+  --muted: #53676D;
+  --line: #D2DEDC;
+  --accent: #0B7471;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #D6EDEB;
+  --sun: #E08A22;
+  --sun-soft: #FCEBD3;
+  --sun-ink: #6E4208;
+  --ok: #1D7446;
+  --ok-soft: #DDF1E5;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E171A; --surface: #152226; --answer: #1A2B30; --ink: #E5EEED; --muted: #98ABAE; --line: #2B3E43;
+    --accent: #4CC3BE; --accent-ink: #062A2A; --accent-soft: #163B3C; --sun: #F2B15A; --sun-soft: #3A2A14; --sun-ink: #F6D29E;
+    --ok: #74D6A1; --ok-soft: #173527; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E171A; --surface: #152226; --answer: #1A2B30; --ink: #E5EEED; --muted: #98ABAE; --line: #2B3E43;
+  --accent: #4CC3BE; --accent-ink: #062A2A; --accent-soft: #163B3C; --sun: #F2B15A; --sun-soft: #3A2A14; --sun-ink: #F6D29E;
+  --ok: #74D6A1; --ok-soft: #173527; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg);
+}
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+/* Header */
+.hero { padding-block: 28px 18px; display: grid; gap: 16px; }
+.eyebrow {
+  margin: 0; font-family: var(--font-mono); font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent);
+}
+h1 {
+  margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 9vw, 3.6rem);
+  line-height: .98; letter-spacing: -.025em; text-wrap: balance;
+}
+.lead { margin: 0; max-width: 60ch; color: var(--muted); }
+.lead strong { color: var(--ink); }
+.setup { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .setup { grid-template-columns: 1fr; } }
+.field, .progress {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 6px; min-width: 0;
+}
+.field label, .progress-label { font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.field input {
+  font: inherit; font-size: 1.05rem; color: var(--ink); background: var(--answer); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 100%;
+}
+.progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.progress-count { font-family: var(--font-mono); font-size: .95rem; font-variant-numeric: tabular-nums; }
+.bar { height: 10px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: var(--accent); border-radius: inherit; transition: width .3s ease; }
+.modes { display: inline-flex; padding: 4px; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; justify-self: start; }
+.mode {
+  border: 0; background: transparent; padding: 8px 18px; border-radius: 999px; cursor: pointer; font-weight: 700; color: var(--muted); min-height: 40px;
+}
+.mode[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.notice { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--sun-soft); color: var(--sun-ink); font-size: .95rem; }
+
+/* Sticky filter rail */
+.rail {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.rail-inner { display: grid; gap: 8px; padding-block: 10px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px;
+  font-size: .9rem; cursor: pointer; white-space: nowrap; min-height: 36px;
+}
+.chip .n { font-family: var(--font-mono); font-size: .75rem; color: var(--muted); margin-left: 4px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .75; }
+.switch { display: inline-flex; align-items: center; gap: 8px; font-size: .92rem; color: var(--muted); cursor: pointer; justify-self: start; }
+.switch input { width: 18px; height: 18px; accent-color: var(--accent); }
+
+/* Deck */
+.deck { display: grid; gap: 40px; padding-block: 24px 40px; }
+.section { display: grid; gap: 14px; }
+.section-head { display: grid; gap: 4px; }
+.section-head h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 1.7rem; line-height: 1.1; letter-spacing: -.015em; text-wrap: balance;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.section-head h2 .n { font-family: var(--font-mono); font-weight: 500; font-size: .8rem; color: var(--muted); letter-spacing: 0; }
+.section-head p { margin: 0; color: var(--muted); max-width: 62ch; }
+
+.ticket {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; min-width: 0;
+}
+.ticket.learned { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+.ticket-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px 0; }
+.num { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.q {
+  margin: 8px 18px 0; font-family: var(--font-display); font-weight: 600; font-size: 1.42rem; line-height: 1.2; letter-spacing: -.01em; text-wrap: balance;
+}
+.q-es { margin: 4px 18px 0; color: var(--muted); }
+.also { margin: 12px 18px 0; font-size: .93rem; color: var(--muted); }
+.also ul { margin: 4px 0 0; padding-left: 18px; }
+.also li { color: var(--ink); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px 16px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; min-height: 42px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; font-size: .95rem; line-height: 1.2;
+}
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 700; }
+.btn.playing { box-shadow: 0 0 0 3px var(--sun); }
+.btn.small { min-height: 36px; padding: 6px 12px; font-size: .88rem; }
+.learn[aria-pressed="true"] { background: var(--ok-soft); color: var(--ok); border-color: var(--ok); font-weight: 700; }
+.reveal { display: none; }
+.deck.hiding .reveal { display: inline-flex; }
+.deck.hiding .ticket:not(.open) .answer { display: none; }
+
+.answer {
+  position: relative; border-top: 2px dashed var(--line); background: var(--answer); padding: 18px 18px 20px; display: grid; gap: 12px;
+}
+.answer::before, .answer::after {
+  content: ""; position: absolute; top: -10px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line);
+}
+.answer::before { left: -10px; }
+.answer::after { right: -10px; }
+.label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0; }
+.a-en { margin: 0; font-size: 1.2rem; line-height: 1.5; max-width: 62ch; }
+.a-es { margin: 0; color: var(--muted); max-width: 62ch; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+.name-slot { background: var(--sun-soft); color: var(--sun-ink); padding: 0 6px; border-radius: 6px; font-weight: 700; }
+.words { display: flex; flex-wrap: wrap; gap: 6px; }
+.word {
+  display: inline-flex; align-items: baseline; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 11px; font-size: .9rem;
+}
+.word b { font-weight: 700; }
+.word span { font-family: var(--font-mono); font-size: .82rem; color: var(--accent); }
+.tip { background: var(--sun-soft); color: var(--ink); border-radius: 10px; padding: 10px 12px; font-size: .95rem; max-width: 66ch; }
+.tip b { color: var(--sun-ink); }
+.alt { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
+.alt p { margin: 0; }
+.alt .en { font-size: 1.05rem; }
+.alt .es { color: var(--muted); font-size: .95rem; }
+
+/* Phrases */
+.phrase { padding: 16px 18px; display: grid; gap: 8px; }
+.phrase .en { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; line-height: 1.25; }
+.phrase .es { margin: 0; color: var(--muted); }
+.phrase .say { margin: 0; font-family: var(--font-mono); font-size: .86rem; color: var(--accent); }
+
+/* Tips */
+.tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 620px) { .tips { grid-template-columns: 1fr; } }
+.tipcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+.tipcard h3 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.tipcard p, .tipcard ul { margin: 0; color: var(--muted); }
+.tipcard ul { padding-left: 18px; }
+.gloss-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.gloss { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.gloss th, .gloss td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.gloss tr:last-child td { border-bottom: 0; }
+.gloss th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.gloss td:nth-child(2) { font-weight: 700; color: var(--accent); white-space: nowrap; }
+.gloss td:first-child s { color: var(--muted); }
+
+/* Simulacro */
+.sim { padding-block: 24px 40px; display: grid; gap: 14px; }
+.sim-card .body { padding: 6px 18px 0; display: grid; gap: 10px; }
+.sim-hint { margin: 0; color: var(--muted); }
+.sim-nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; padding: 16px 18px 18px; border-top: 1px solid var(--line); }
+.sim-nav .grow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.foot { padding-block: 8px 48px; color: var(--muted); font-size: .9rem; display: grid; gap: 10px; }
+.foot h2 { margin: 0; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; font-family: var(--font-mono); font-weight: 500; }
+.foot ul { margin: 0; padding-left: 18px; }
+.foot a { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+</head>
+<body>
+<header class="wrap hero">
+  <p class="eyebrow">Entrevista · Walt Disney World · Food &amp; Beverage</p>
+  <h1>Lista para Disney</h1>
+  <p class="lead">Preguntas que se repiten en las entrevistas de Disney, cada una con una <strong>respuesta corta en inglés</strong>, su traducción y cómo se pronuncian las palabras difíciles. Escúchala, repítela en voz alta y márcala cuando ya te la sepas.</p>
+  <div class="setup">
+    <div class="field">
+      <label for="name">Tu nombre</label>
+      <input id="name" type="text" autocomplete="given-name" placeholder="Escríbelo y aparece en tus respuestas">
+    </div>
+    <div class="progress" aria-live="polite">
+      <div class="progress-top"><span class="progress-label">Ya te sabes</span><span id="progress-count" class="progress-count">0 de 0</span></div>
+      <div class="bar"><span id="progress-fill"></span></div>
+    </div>
+  </div>
+  <div class="modes" aria-label="Modo">
+    <button class="mode" type="button" data-mode="study" aria-pressed="true">Estudiar</button>
+    <button class="mode" type="button" data-mode="sim" aria-pressed="false">Simulacro</button>
+  </div>
+  <p id="no-audio" class="notice" hidden>Este navegador no tiene voz en inglés. Ábrelo en Chrome o Safari para escuchar las preguntas y respuestas.</p>
+</header>
+
+<div class="rail" id="rail">
+  <div class="wrap rail-inner">
+    <div class="chips" id="chips" aria-label="Temas"></div>
+    <label class="switch" for="hide"><input type="checkbox" id="hide"><span>Esconder respuestas para practicar</span></label>
+  </div>
+</div>
+
+<main class="wrap deck" id="deck"></main>
+<section class="wrap sim" id="sim" hidden></section>
+
+<footer class="wrap foot">
+  <h2>De dónde salen las preguntas</h2>
+  <ul>
+    <li><a href="https://parksjobs.disneycareers.com/job/orlando/food-and-beverage-cast-member-seater-part-time-walt-disney-world/1678/82961492288" target="_blank" rel="noopener">Oferta oficial de Food &amp; Beverage en Walt Disney World</a> (alergias, menú, seguridad alimentaria)</li>
+    <li><a href="https://www.attractionsmanagement.com/attractions-news/Disney-adds-inclusion-to-its-values-allowing-staff-to-wear-personal-jewellery-and-display-tattoos/347554" target="_blank" rel="noopener">Las Cinco Claves de Disney</a></li>
+    <li><a href="https://forums.wdwmagic.com/threads/most-common-employment-questions-hourly.294908/page-5" target="_blank" rel="noopener">WDWMagic: experiencias de entrevistas por hora</a></li>
+    <li><a href="https://www.mockquestions.com/company/Walt+Disney+World+Co./print/" target="_blank" rel="noopener">MockQuestions: preguntas de Walt Disney World</a></li>
+    <li><a href="https://www.careertestprep.com/knowledge/disney-interview-questions" target="_blank" rel="noopener">Guía 2026 de entrevistas Disney</a></li>
+  </ul>
+  <p>Guía de estudio personal. No es material oficial de Disney.</p>
+</footer>
+
+<script>
+const SECTIONS = [
+  { id: "ti", title: "Sobre ti", intro: "Casi siempre empiezan aquí. Son para conocerte: responde tranquila y con una sonrisa." },
+  { id: "disney", title: "Por qué Disney", intro: "Quieren ver que te interesa Disney de verdad y que conoces su forma de trabajar." },
+  { id: "sit", title: "Situaciones", intro: "Te ponen un caso y quieren saber qué harías. La regla de oro: la seguridad primero, luego la amabilidad." },
+  { id: "horario", title: "Horario y logística", intro: "Preguntas prácticas. En restaurantes, la flexibilidad pesa mucho." },
+  { id: "cierre", title: "Al cierre", intro: "Termina con interés y con la despedida típica de Disney." },
+  { id: "frases", title: "Frases salvavidas", intro: "Si no entiendes algo, no pasa nada. Usar estas frases se ve profesional." },
+  { id: "consejos", title: "Antes de entrar", intro: "Léelo una vez la noche antes y otra vez antes de la entrevista." }
+];
+
+const QA = [
+  { id: "q01", sec: "ti", q: "Tell me about yourself.", qes: "Háblame de ti.",
+    also: ["Can you tell me a little about yourself?", "Please introduce yourself."],
+    a: "Hi! My name is {name}. I'm from Venezuela, and I have lived in the United States for almost ten years. I studied law, and I'm a lawyer in my country. I'm a friendly and responsible person. I love helping people, and I speak English and Spanish.",
+    aes: "¡Hola! Me llamo {name}. Soy de Venezuela y vivo en Estados Unidos desde hace casi diez años. Estudié Derecho y soy abogada en mi país. Soy una persona amable y responsable. Me encanta ayudar a la gente y hablo inglés y español.",
+    words: [["lawyer", "LÓ-yer"], ["responsible", "ris-PÓN-si-bol"], ["almost", "ÓL-moust"], ["Venezuela", "ve-ne-SUÉI-la"]],
+    tip: "Es casi siempre la primera pregunta. Dila sin prisa: hacer pausas es normal." },
+  { id: "q02", sec: "ti", q: "How would you describe your personality?", qes: "¿Cómo describirías tu personalidad?",
+    also: ["Describe yourself in three words.", "What would your friends say about you?"],
+    a: "I'm friendly, positive and patient. I like to smile, and I like to make people feel welcome. I also work very well in a team.",
+    aes: "Soy amable, positiva y paciente. Me gusta sonreír y hacer que la gente se sienta bienvenida. También trabajo muy bien en equipo.",
+    words: [["patient", "PÉI-shent"], ["welcome", "UÉL-kom"], ["positive", "PÓ-si-tiv"]],
+    tip: "Si te piden tres palabras, di solo: Friendly, positive and patient." },
+  { id: "q03", sec: "ti", q: "What are your strengths?", qes: "¿Cuáles son tus fortalezas?",
+    also: ["What is your greatest strength?", "What are you good at?"],
+    a: "I'm very responsible. I always arrive on time, and I finish my work. I'm also a good listener. As a lawyer, I learned to stay calm and to find solutions for people.",
+    aes: "Soy muy responsable. Siempre llego a tiempo y termino mi trabajo. También sé escuchar. Como abogada, aprendí a mantener la calma y a buscar soluciones para la gente.",
+    words: [["listener", "LÍS-ner"], ["calm", "KAAM"], ["solutions", "so-LÚ-shons"]] },
+  { id: "q04", sec: "ti", q: "What is your greatest weakness?", qes: "¿Cuál es tu mayor debilidad?",
+    also: ["What do you need to improve?"],
+    a: "Sometimes my English is not perfect. But I practice every day, and when I don't understand something, I ask. I'm improving very fast.",
+    aes: "A veces mi inglés no es perfecto. Pero practico todos los días y, cuando no entiendo algo, pregunto. Estoy mejorando muy rápido.",
+    words: [["weakness", "UÍK-nes"], ["improving", "im-PRÚ-ving"]],
+    tip: "Convierte tu miedo en una fortaleza: muestra honestidad y ganas de aprender. Dila tranquila." },
+  { id: "q05", sec: "ti", q: "How would you rate your English?", qes: "¿Cómo calificarías tu inglés?",
+    also: ["Are you comfortable speaking English with guests?"],
+    a: "I can communicate in English, and I'm improving every day. I also speak Spanish, so I can help many of our Spanish-speaking guests.",
+    aes: "Me puedo comunicar en inglés y mejoro cada día. Además hablo español, así que puedo ayudar a muchos de nuestros visitantes hispanohablantes.",
+    words: [["communicate", "co-MIÚ-ni-keit"], ["guests", "GUESTS (gue de guerra)"]],
+    tip: "Hablar español es una ventaja en Orlando: muchos visitantes son latinos. Dilo con orgullo." },
+  { id: "q06", sec: "ti", q: "Why should we hire you?", qes: "¿Por qué deberíamos contratarte?",
+    also: ["Why are you the best person for this job?"],
+    a: "Because I'm responsible, I love working with people, and I really want to grow with Disney. I also speak Spanish, so I can help many guests. I will give my best every day.",
+    aes: "Porque soy responsable, me encanta trabajar con gente y de verdad quiero crecer con Disney. También hablo español, así que puedo ayudar a muchos visitantes. Daré lo mejor de mí todos los días.",
+    words: [["hire", "JÁI-er"], ["grow", "GRÓU"]] },
+  { id: "q07", sec: "ti", q: "Tell me about your current job.", qes: "Cuéntame de tu trabajo actual.",
+    also: ["What do you do now?", "Are you working right now?"],
+    a: "I paint apartments. It's physical work, so I'm used to standing and working long hours. I'm very careful with details, and I always finish on time.",
+    aes: "Pinto apartamentos. Es un trabajo físico, así que estoy acostumbrada a estar de pie y trabajar muchas horas. Soy muy cuidadosa con los detalles y siempre termino a tiempo.",
+    words: [["physical", "FÍ-si-col"], ["used to", "IÚS-tu"], ["details", "DÍ-teils"]],
+    tip: "Este trabajo te suma: en un restaurante de Disney pasas el día de pie y moviéndote." },
+  { id: "q08", sec: "ti", q: "Why do you want to leave your current job?", qes: "¿Por qué quieres dejar tu trabajo actual?",
+    also: ["Why are you looking for a new job?"],
+    a: "I'm thankful for my job, but I'm looking for a stable company with benefits and opportunities to grow. Disney is that company for me.",
+    aes: "Agradezco mi trabajo, pero busco una empresa estable, con beneficios y oportunidades para crecer. Para mí, Disney es esa empresa.",
+    words: [["stable", "STÉI-bol"], ["benefits", "BÉ-ne-fits"], ["opportunities", "o-por-TIÚ-ni-tis"]],
+    tip: "Nunca hables mal de tu trabajo actual. Empezar agradeciendo te hace ver profesional." },
+  { id: "q09", sec: "ti", q: "You studied law. Why do you want to work in a restaurant?", qes: "Estudiaste Derecho. ¿Por qué quieres trabajar en un restaurante?",
+    also: ["This job is very different from being a lawyer. Why this job?"],
+    a: "I'm starting a new chapter here, and I'm happy to start at Disney. As a lawyer, I helped people every day. In a restaurant, I can also help people and make their day better. My experience helps me stay calm and organized.",
+    aes: "Estoy empezando una nueva etapa aquí y me alegra empezar en Disney. Como abogada, ayudaba a la gente todos los días. En un restaurante también puedo ayudar a la gente y mejorarle el día. Mi experiencia me ayuda a mantener la calma y ser organizada.",
+    words: [["chapter", "CHÁP-ter"], ["organized", "ÓR-ga-naist"]],
+    tip: "La preguntan porque pueden pensar que estás sobrecalificada. Muestra que lo ves como un buen comienzo, no como algo menor." },
+  { id: "q10", sec: "ti", q: "What do you like to do in your free time?", qes: "¿Qué te gusta hacer en tu tiempo libre?",
+    also: ["What do you do for fun?"],
+    a: "I like to spend time with my family, cook, and watch movies. On my days off, I like to visit new places here in Florida.",
+    aes: "Me gusta pasar tiempo con mi familia, cocinar y ver películas. En mis días libres me gusta conocer lugares nuevos aquí en Florida.",
+    words: [["days off", "DEIS of"]],
+    tip: "Cámbiala por lo que de verdad te gusta. Si es verdad, sale natural." },
+
+  { id: "q11", sec: "disney", q: "Why do you want to work for Disney?", qes: "¿Por qué quieres trabajar en Disney?",
+    also: ["What made you apply?", "Why Disney and not another company?"],
+    a: "Disney creates happy memories for families from all over the world, and I want to be part of that. I also know that Disney takes care of its cast members and gives them opportunities to learn and grow.",
+    aes: "Disney crea recuerdos felices para familias de todo el mundo, y quiero ser parte de eso. También sé que Disney cuida a sus cast members y les da oportunidades para aprender y crecer.",
+    words: [["memories", "MÉ-mo-ris"], ["cast members", "KAST MÉM-bers"]],
+    tip: "Di cast members y no employees: así llama Disney a sus trabajadores, y se nota que hiciste la tarea." },
+  { id: "q12", sec: "disney", q: "Why do you want to work in Food and Beverage?", qes: "¿Por qué quieres trabajar en Food & Beverage (comidas y bebidas)?",
+    also: ["Why did you choose this role?"],
+    a: "Food is a big part of a great vacation. I like to serve people, to work fast and to work in a team. With a smile and good service, I can make a guest's day better.",
+    aes: "La comida es una parte importante de unas buenas vacaciones. Me gusta atender a la gente, trabajar rápido y en equipo. Con una sonrisa y un buen servicio, puedo mejorarle el día a un visitante.",
+    words: [["beverage", "BÉ-ve-rich"], ["vacation", "vei-KÉI-shon"], ["role", "RÓUL"]] },
+  { id: "q13", sec: "disney", q: "What is your favorite Disney movie or character? Why?", qes: "¿Cuál es tu película o personaje favorito de Disney? ¿Por qué?",
+    also: ["Who is your favorite Disney character?"],
+    a: "My favorite movie is Encanto, because it's about family. It reminds me of my family and my home in Latin America.",
+    aes: "Mi película favorita es Encanto, porque trata sobre la familia. Me recuerda a mi familia y a mi hogar en Latinoamérica.",
+    words: [["favorite", "FÉI-vo-rit"], ["reminds", "ri-MÁINDS"]],
+    tip: "Es muy común y es para conocerte. Cambia la película por tu favorita de verdad y da UNA razón." },
+  { id: "q14", sec: "disney", q: "Have you been to Walt Disney World? What is your favorite park?", qes: "¿Has ido a Walt Disney World? ¿Cuál es tu parque favorito?",
+    also: ["What is your favorite attraction?"],
+    a: "Yes! My favorite park is EPCOT, because you can visit many countries in one day. I love the food there, too.",
+    aes: "¡Sí! Mi parque favorito es EPCOT, porque puedes visitar muchos países en un solo día. También me encanta la comida de allí.",
+    words: [["EPCOT", "ÉP-kot"], ["countries", "KÁN-tris"]],
+    alt: { label: "Si nunca has ido", en: "Not yet, but I'm very excited to see the magic from the inside.", es: "Todavía no, pero me emociona mucho ver la magia desde adentro." } },
+  { id: "q15", sec: "disney", q: "Do you know Disney's Five Keys?", qes: "¿Conoces las Cinco Claves de Disney?",
+    also: ["What is most important when you serve guests?"],
+    a: "Yes. The Five Keys are Safety, Courtesy, Inclusion, Show and Efficiency. Safety always comes first.",
+    aes: "Sí. Las Cinco Claves son Seguridad, Cortesía, Inclusión, Espectáculo y Eficiencia. La seguridad siempre va primero.",
+    words: [["Safety", "SÉIF-ti"], ["Courtesy", "KÉR-te-si"], ["Inclusion", "in-KLÚ-shon"], ["Efficiency", "i-FÍ-shen-si"]],
+    tip: "Son los valores con los que Disney entrena a todo el personal. Si dices safety first en otras respuestas, sumas puntos." },
+  { id: "q16", sec: "disney", q: "What does great guest service mean to you?", qes: "¿Qué significa para ti un gran servicio al visitante?",
+    also: ["What is good customer service?"],
+    a: "It means that every guest feels welcome and special. I smile, I listen, and I help quickly. And if I don't know the answer, I find someone who does.",
+    aes: "Significa que cada visitante se sienta bienvenido y especial. Sonrío, escucho y ayudo rápido. Y si no sé la respuesta, busco a alguien que sí la sepa.",
+    words: [["special", "SPÉ-shal"], ["quickly", "KUÍK-li"]] },
+  { id: "q17", sec: "disney", q: "Are you comfortable wearing a costume and following the Disney Look?", qes: "¿Te sientes cómoda usando el uniforme y siguiendo las normas de imagen de Disney?",
+    also: ["Are you OK with wearing a uniform?"],
+    a: "Yes, of course. The costume is part of the show, and I'm happy to follow the guidelines.",
+    aes: "Sí, claro. El uniforme es parte del espectáculo y con gusto sigo las normas.",
+    words: [["costume", "KÓS-tum"], ["guidelines", "GÁID-lains"], ["comfortable", "KÓMF-ter-bol"]],
+    tip: "En Disney el uniforme se llama costume, y el Disney Look son las normas de imagen (cabello, uñas, accesorios)." },
+
+  { id: "q18", sec: "sit", q: "Tell me about a time you gave great service to someone.", qes: "Cuéntame de una vez que diste un gran servicio a alguien.",
+    also: ["Tell me about a time you went above and beyond for a customer."],
+    a: "When I worked as a lawyer, a woman came to my office very worried about a family problem. I listened to her, I explained everything in simple words, and I helped her step by step. In the end, she felt calm, and she was very thankful.",
+    aes: "Cuando trabajaba como abogada, una señora llegó a mi oficina muy preocupada por un problema familiar. La escuché, le expliqué todo con palabras sencillas y la ayudé paso a paso. Al final se sintió tranquila y me lo agradeció mucho.",
+    words: [["worried", "UÓ-rid"], ["explained", "ex-PLÉIND"], ["thankful", "ZÉNK-ful"]],
+    tip: "Usa una historia real tuya con esta forma: qué pasó, qué hiciste y cómo terminó. Si la tuya es de otro trabajo, también sirve." },
+  { id: "q19", sec: "sit", q: "How would you handle an upset guest?", qes: "¿Qué harías con un visitante molesto?",
+    also: ["What would you do if a guest complains?", "How do you deal with an angry customer?"],
+    a: "First, I stay calm and I listen. I say, 'I'm so sorry about that. Let me help you.' Then I try to fix the problem quickly. If I can't fix it, I call my leader.",
+    aes: "Primero mantengo la calma y escucho. Digo: 'Lo siento mucho. Déjeme ayudarle.' Luego intento resolver el problema rápido. Si no puedo, llamo a mi líder.",
+    words: [["upset", "ap-SÉT"], ["leader", "LÍ-der"], ["complains", "com-PLÉINS"]],
+    tip: "En Disney al supervisor se le dice leader. Nunca discutas con el visitante: escuchar primero es la clave." },
+  { id: "q20", sec: "sit", q: "A guest says their food is wrong or cold. What do you do?", qes: "Un visitante dice que su comida está mal o fría. ¿Qué haces?",
+    also: ["A guest is not happy with their meal. What do you do?"],
+    a: "I apologize, and I take the plate. I tell the kitchen right away, and I tell the guest how long it will take. Then I check that the new plate is correct.",
+    aes: "Pido disculpas y me llevo el plato. Aviso a la cocina enseguida y le digo al visitante cuánto va a tardar. Después reviso que el plato nuevo esté correcto.",
+    words: [["apologize", "a-PÓ-lo-yais"], ["kitchen", "KÍ-chen"], ["right away", "rait a-UÉI"]] },
+  { id: "q21", sec: "sit", q: "A guest tells you they have a food allergy. What do you do?", qes: "Un visitante te dice que tiene una alergia alimentaria. ¿Qué haces?",
+    also: ["What would you do if a child is allergic to peanuts?"],
+    a: "Food allergies are very serious, so safety comes first. I never guess. I tell my leader or the chef right away, and we follow the allergy process.",
+    aes: "Las alergias son muy serias, así que la seguridad va primero. Nunca adivino. Aviso a mi líder o al chef de inmediato y seguimos el procedimiento de alergias.",
+    words: [["allergy", "Á-ler-yi"], ["serious", "SÍ-ri-os"], ["guess", "GUES"], ["process", "PRÓ-ses"]],
+    tip: "La oferta de trabajo menciona alergias: los restaurantes de Disney se las toman muy en serio. Aquí safety first es la respuesta perfecta." },
+  { id: "q22", sec: "sit", q: "You see a spill on the floor. What do you do?", qes: "Ves algo derramado en el piso. ¿Qué haces?",
+    also: ["What would you do if you see something dangerous?"],
+    a: "Safety first. I stay next to the spill so nobody slips, and I clean it or ask a coworker for help right away.",
+    aes: "La seguridad primero. Me quedo junto a lo derramado para que nadie se resbale, y lo limpio o le pido ayuda a un compañero de inmediato.",
+    words: [["spill", "SPIL"], ["slips", "SLIPS"], ["coworker", "KÓU-uor-ker"]] },
+  { id: "q23", sec: "sit", q: "A guest asks you a question and you don't know the answer. What do you do?", qes: "Un visitante te pregunta algo y no sabes la respuesta. ¿Qué haces?",
+    also: [],
+    a: "I never just say 'I don't know.' I say, 'Great question! Let me find out for you.' Then I ask a coworker or my leader.",
+    aes: "Nunca digo solo 'no sé'. Digo: '¡Buena pregunta! Déjeme averiguarlo.' Luego le pregunto a un compañero o a mi líder.",
+    words: [["find out", "FÁIND áut"]],
+    tip: "En Disney evitan decir 'I don't know' a secas. Esta respuesta demuestra que conoces la cultura." },
+  { id: "q24", sec: "sit", q: "Tell me about a time you worked as part of a team.", qes: "Cuéntame de una vez que trabajaste en equipo.",
+    also: ["Give me an example of teamwork."],
+    a: "In my current job, we paint apartments as a team. One day we had to finish three apartments in one day. We divided the work, we helped each other, and we finished on time.",
+    aes: "En mi trabajo actual pintamos apartamentos en equipo. Un día teníamos que terminar tres apartamentos en un solo día. Dividimos el trabajo, nos ayudamos y terminamos a tiempo.",
+    words: [["divided", "di-VÁI-ded"], ["each other", "ICH Á-der"]],
+    tip: "Cambia los detalles por un caso real tuyo. Lo importante es la forma: problema, qué hicieron y resultado." },
+  { id: "q25", sec: "sit", q: "How do you handle stress or a very busy day?", qes: "¿Cómo manejas el estrés o un día muy ocupado?",
+    also: ["How do you work under pressure?"],
+    a: "I stay calm, and I do one thing at a time. I focus on the guest in front of me, and I talk with my team. When we work together, everything is easier.",
+    aes: "Mantengo la calma y hago una cosa a la vez. Me enfoco en el visitante que tengo enfrente y hablo con mi equipo. Cuando trabajamos juntos, todo es más fácil.",
+    words: [["pressure", "PRÉ-sher"], ["focus", "FÓU-kus"], ["busy", "BÍ-si"]] },
+  { id: "q26", sec: "sit", q: "What would you do if you disagree with a coworker?", qes: "¿Qué harías si no estás de acuerdo con un compañero?",
+    also: ["Tell me about a conflict with a coworker."],
+    a: "I talk to the person in private and with respect. I listen to their side, and we look for a solution together. If we can't agree, I ask my leader for help. The guests should never see the problem.",
+    aes: "Hablo con la persona en privado y con respeto. Escucho su punto de vista y buscamos una solución juntos. Si no nos ponemos de acuerdo, le pido ayuda a mi líder. Los visitantes nunca deben ver el problema.",
+    words: [["private", "PRÁI-vet"], ["respect", "ris-PÉKT"], ["agree", "a-GRÍ"]],
+    tip: "La última frase es muy de Disney: los problemas se resuelven backstage (detrás de escena), nunca frente a los visitantes." },
+  { id: "q27", sec: "sit", q: "A family is celebrating a birthday at your restaurant. What would you do?", qes: "Una familia celebra un cumpleaños en tu restaurante. ¿Qué harías?",
+    also: ["How would you create a magical moment for a guest?"],
+    a: "I say 'Happy birthday!' with a big smile, and I tell my team so we can make it special. Small details create big magic.",
+    aes: "Digo '¡Feliz cumpleaños!' con una gran sonrisa y aviso a mi equipo para hacerlo especial. Los pequeños detalles crean mucha magia.",
+    words: [["celebrating", "SÉ-le-brei-ting"], ["magic", "MÁ-yik"]] },
+  { id: "q28", sec: "sit", q: "What would you do if you see a lost child?", qes: "¿Qué harías si ves a un niño perdido?",
+    also: [],
+    a: "Safety first. I stay with the child, I stay calm, and I call my leader or security right away. I never leave the child alone.",
+    aes: "La seguridad primero. Me quedo con el niño, mantengo la calma y llamo a mi líder o a seguridad de inmediato. Nunca dejo al niño solo.",
+    words: [["security", "si-KIÚ-ri-ti"], ["alone", "a-LÓUN"], ["child", "CHÁILD"]] },
+
+  { id: "q29", sec: "horario", q: "What is your availability?", qes: "¿Cuál es tu disponibilidad?",
+    also: ["Can you work weekends and holidays?", "Can you work early mornings or late nights?"],
+    a: "I'm very flexible. I can work mornings, nights, weekends and holidays.",
+    aes: "Soy muy flexible. Puedo trabajar en las mañanas, en las noches, fines de semana y feriados.",
+    words: [["availability", "a-vei-la-BÍ-li-ti"], ["flexible", "FLÉK-si-bol"], ["holidays", "JÓ-li-deis"], ["weekends", "UÍK-ends"]],
+    tip: "En restaurantes los horarios cambian cada semana y la flexibilidad es de lo que más pesa al contratar. Empieza siempre por aquí." },
+  { id: "q30", sec: "horario", q: "Is there any day or time you can't work?", qes: "¿Hay algún día u horario en que no puedas trabajar?",
+    also: ["Do you have any restrictions on your schedule?"],
+    a: "I only have one family appointment every two weeks. I know the dates in advance, so I can request those days early or trade shifts with a coworker. It won't be a problem.",
+    aes: "Solo tengo una cita familiar cada dos semanas. Sé las fechas con anticipación, así que puedo pedir esos días con tiempo o cambiar turnos con un compañero. No será un problema.",
+    words: [["appointment", "a-PÓINT-ment"], ["in advance", "in ad-VÁNS"], ["shifts", "SHIFTS"], ["schedule", "SKÉ-yul"]],
+    tip: "Úsala solo si te preguntan por restricciones. No tienes que dar detalles médicos: family appointment es suficiente y es verdad. Lo de alternar una semana de día y otra de tarde conviene hablarlo con tu leader después de que te contraten, no en esta entrevista." },
+  { id: "q31", sec: "horario", q: "Are you looking for full-time or part-time?", qes: "¿Buscas tiempo completo o medio tiempo?",
+    also: ["How many hours do you want to work?"],
+    a: "I'm looking for a full-time position. I'm ready to work hard and grow with the company.",
+    aes: "Busco un puesto de tiempo completo. Estoy lista para trabajar duro y crecer con la empresa.",
+    words: [["position", "po-SÍ-shon"], ["full-time", "FUL-taim"]],
+    alt: { label: "Si solo ofrecen part-time", en: "I'm open to part-time, but my goal is full-time.", es: "Acepto medio tiempo, pero mi meta es tiempo completo." } },
+  { id: "q32", sec: "horario", q: "Do you have reliable transportation?", qes: "¿Tienes un medio de transporte confiable?",
+    also: ["How will you get to work?"],
+    a: "Yes, I have my own car. I will always arrive on time.",
+    aes: "Sí, tengo carro propio. Siempre llegaré a tiempo.",
+    words: [["reliable", "ri-LÁI-a-bol"], ["transportation", "trans-por-TÉI-shon"]] },
+  { id: "q33", sec: "horario", q: "Can you stand for long periods and lift heavy things?", qes: "¿Puedes estar de pie mucho tiempo y cargar cosas pesadas?",
+    also: ["This job is very physical. Is that OK for you?"],
+    a: "Yes. In my current job, I stand all day, and I carry heavy paint and tools. I'm used to physical work.",
+    aes: "Sí. En mi trabajo actual estoy de pie todo el día y cargo pintura y herramientas pesadas. Estoy acostumbrada al trabajo físico.",
+    words: [["heavy", "JÉ-vi"], ["tools", "TULS"], ["periods", "PÍ-ri-ods"]] },
+  { id: "q34", sec: "horario", q: "Is it OK for you to work outside in the heat?", qes: "¿Te parece bien trabajar afuera con calor?",
+    also: [],
+    a: "Yes. I live in Florida, so I know the heat! I drink water, and I keep a positive attitude.",
+    aes: "Sí. Vivo en Florida, ¡así que conozco el calor! Tomo agua y mantengo una actitud positiva.",
+    words: [["heat", "JIIT"], ["attitude", "Á-ti-tud"]] },
+  { id: "q35", sec: "horario", q: "When can you start?", qes: "¿Cuándo puedes empezar?",
+    also: [],
+    a: "I can start in two weeks, after I give notice at my current job.",
+    aes: "Puedo empezar en dos semanas, después de avisar en mi trabajo actual.",
+    words: [["notice", "NÓU-tis"]],
+    tip: "Avisar con dos semanas es lo normal en EE. UU. y se ve responsable.",
+    alt: { label: "Si puedes empezar ya", en: "I can start right away.", es: "Puedo empezar de inmediato." } },
+
+  { id: "q36", sec: "cierre", q: "Do you have any questions for me?", qes: "¿Tienes alguna pregunta para mí?",
+    also: [],
+    a: "Yes, thank you. What does a normal day look like in this role? And what are the next steps?",
+    aes: "Sí, gracias. ¿Cómo es un día normal en este puesto? ¿Y cuáles son los siguientes pasos?",
+    words: [["normal day", "NÓR-mal dei"], ["next steps", "NEKST steps"]],
+    tip: "Haz siempre una o dos preguntas: demuestra interés.",
+    alt: { label: "Otra pregunta que puedes hacer", en: "What do you like most about working at Disney?", es: "¿Qué es lo que más le gusta de trabajar en Disney?" } },
+  { id: "q37", sec: "cierre", q: "Is there anything else you'd like to add?", qes: "¿Hay algo más que quieras agregar?",
+    also: ["Anything else you want us to know?"],
+    a: "Just that I'm very excited about this opportunity. Thank you for your time. Have a magical day!",
+    aes: "Solo que estoy muy emocionada por esta oportunidad. Gracias por su tiempo. ¡Que tenga un día mágico!",
+    words: [["excited", "ek-SÁI-ted"], ["opportunity", "o-por-TIÚ-ni-ti"], ["magical", "MÁ-yi-col"]],
+    tip: "Have a magical day es la despedida típica de los cast members. Cierra con eso y una sonrisa." }
+];
+
+const PHRASES = [
+  { id: "p1", en: "Could you repeat that, please?", es: "¿Podría repetirlo, por favor?", say: "kud iú ri-PÍT dat, PLIS?" },
+  { id: "p2", en: "Could you say that a little slower, please?", es: "¿Podría decirlo un poco más despacio, por favor?", say: "kud iú sei dat a LÍ-tol SLÓU-er, plis?" },
+  { id: "p3", en: "Sorry, I didn't understand. Do you mean…?", es: "Perdón, no entendí. ¿Se refiere a…?", say: "SÓ-ri, ai DÍ-dent an-der-STÁND. du iú MIIN…?", tip: "Después de 'Do you mean' repite con tus palabras lo que entendiste; ellos te confirman." },
+  { id: "p4", en: "That's a great question. Let me think for a second.", es: "Muy buena pregunta. Déjeme pensar un segundo.", say: "dats a GREIT KUÉS-chon. let mi ZINK for a SÉ-kond." },
+  { id: "p5", en: "Nice to meet you. Thank you for having me.", es: "Mucho gusto. Gracias por recibirme.", say: "NAIS tu MIIT iu. ZENK iu for JÁ-ving mi." },
+  { id: "p6", en: "I'm a little nervous, but I'm very excited to be here.", es: "Estoy un poco nerviosa, pero muy emocionada de estar aquí.", say: "aim a LÍ-tol NÉR-vos, bot aim VÉ-ri ek-SÁI-ted tu bi JÍ-ar." },
+  { id: "p7", en: "Can you hear me well?", es: "¿Me escucha bien? (si es por video)", say: "ken iú JÍ-ar mi UÉL?" },
+  { id: "p8", en: "Thank you for your time. Have a magical day!", es: "Gracias por su tiempo. ¡Que tenga un día mágico!", say: "ZENK iu for ior TAIM. jav a MÁ-yi-col DEI!" }
+];
+
+const GLOSS = [
+  ["customer", "guest", "visitante, cliente"],
+  ["employee", "cast member", "trabajador de Disney"],
+  ["boss, manager", "leader", "supervisor, jefe"],
+  ["uniform", "costume", "uniforme"],
+  ["in front of guests", "on stage", "zona donde te ven los visitantes"],
+  ["employee area", "backstage", "zona solo para trabajadores"]
+];
+
+const TIPS = [
+  { h: "Respuestas cortas", p: "Dos o tres frases bastan. Disney contrata actitud y sonrisa, no un inglés perfecto." },
+  { h: "Si no entiendes, pregunta", p: "Usa las frases salvavidas. Pedir que repitan es normal y se ve profesional." },
+  { h: "Historias en tres pasos", p: "Qué pasó, qué hiciste y cómo terminó. Sirve para todas las preguntas que empiezan con Tell me about a time." },
+  { h: "Seguridad primero", p: "Ante cualquier caso difícil, empieza con safety first. Es la primera de las Cinco Claves." },
+  { h: "Si es por video", list: ["Prueba cámara y audio antes.", "Luz de frente, fondo ordenado.", "Teléfono en silencio.", "Conéctate 10 minutos antes."] },
+  { h: "Si es en persona", list: ["Llega 15 minutos antes.", "Ropa limpia y sencilla, tipo business casual.", "Lleva tu identificación.", "Sonríe al saludar y al despedirte."] }
+];
+
+const ICON_SPEAK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+const ICON_EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+/* Storage: per-viewer convenience only */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+const state = {
+  name: store.get("ld-name", ""),
+  learned: new Set(store.get("ld-learned", [])),
+  hide: !!store.get("ld-hide", false),
+  filter: "all",
+  mode: "study",
+  sim: { order: [], idx: 0, text: false, answer: false }
+};
+
+const byId = Object.fromEntries(QA.map(q => [q.id, q]));
+const phraseById = Object.fromEntries(PHRASES.map(p => [p.id, p]));
+const secTitle = Object.fromEntries(SECTIONS.map(s => [s.id, s.title]));
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function withName(text) {
+  const slot = '<span class="name-slot">' + esc(state.name || "tu nombre") + "</span>";
+  return esc(text).split("{name}").join(slot);
+}
+function spokenAnswer(text) {
+  if (state.name) return text.split("{name}").join(state.name);
+  return text.replace(/[^.!?]*\{name\}[^.!?]*[.!?]\s*/g, "");
+}
+function pad(n) { return String(n).padStart(2, "0"); }
+
+/* Speech */
+const synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+let enVoice = null;
+let playingBtn = null;
+function chooseVoice() {
+  if (!synth) return;
+  let vs = [];
+  try { vs = synth.getVoices() || []; } catch (e) { vs = []; }
+  const us = vs.filter(v => /^en[-_]US/i.test(v.lang));
+  const prefer = ["Samantha", "Google US English", "Microsoft Aria", "Microsoft Jenny", "Ava", "Allison", "Microsoft Zira"];
+  enVoice = prefer.map(p => us.find(v => v.name.indexOf(p) !== -1)).find(Boolean)
+    || us.find(v => v.localService) || us[0] || vs.find(v => /^en/i.test(v.lang)) || null;
+}
+if (synth) {
+  chooseVoice();
+  try { synth.addEventListener("voiceschanged", chooseVoice); } catch (e) { synth.onvoiceschanged = chooseVoice; }
+} else {
+  document.getElementById("no-audio").hidden = false;
+}
+function stopSpeaking() {
+  if (synth) { try { synth.cancel(); } catch (e) {} }
+  if (playingBtn) { playingBtn.classList.remove("playing"); playingBtn = null; }
+}
+function speak(text, rate, btn) {
+  if (!synth || !text) return;
+  if (btn && btn === playingBtn) { stopSpeaking(); return; }
+  stopSpeaking();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  if (enVoice) u.voice = enVoice;
+  u.rate = rate;
+  if (btn) { btn.classList.add("playing"); playingBtn = btn; }
+  const done = () => { if (btn) btn.classList.remove("playing"); if (playingBtn === btn) playingBtn = null; };
+  u.onend = done;
+  u.onerror = done;
+  synth.speak(u);
+}
+function textFor(key) {
+  const [kind, id] = key.split(":");
+  if (kind === "q") return byId[id] ? byId[id].q : "";
+  if (kind === "a") return byId[id] ? spokenAnswer(byId[id].a) : "";
+  if (kind === "alt") return byId[id] && byId[id].alt ? byId[id].alt.en : "";
+  if (kind === "p") return phraseById[id] ? phraseById[id].en : "";
+  return "";
+}
+function sayBtns(key, primaryLabel, primary) {
+  if (!synth) return "";
+  return '<button type="button" class="btn ' + (primary ? "primary" : "") + '" data-say="' + key + '" data-rate="0.92">' + ICON_SPEAK + esc(primaryLabel) + "</button>" +
+    '<button type="button" class="btn" data-say="' + key + '" data-rate="0.68">' + ICON_SPEAK + "Lento</button>";
+}
+
+/* Rendering */
+function answerHTML(q) {
+  let h = '<div class="answer"><p class="label">Tu respuesta</p>';
+  h += '<p class="a-en" lang="en">' + withName(q.a) + "</p>";
+  h += '<div class="row">' + sayBtns("a:" + q.id, "Escuchar respuesta", false) + "</div>";
+  h += '<p class="a-es">' + withName(q.aes) + "</p>";
+  if (q.words && q.words.length) {
+    h += '<div><p class="label">Cómo se dice</p><div class="words">' +
+      q.words.map(w => '<span class="word"><b lang="en">' + esc(w[0]) + "</b><span>" + esc(w[1]) + "</span></span>").join("") + "</div></div>";
+  }
+  if (q.alt) {
+    h += '<div class="alt"><p class="label">' + esc(q.alt.label) + '</p><p class="en" lang="en">' + esc(q.alt.en) + '</p><p class="es">' + esc(q.alt.es) + '</p>' +
+      (synth ? '<div class="row"><button type="button" class="btn small" data-say="alt:' + q.id + '" data-rate="0.85">' + ICON_SPEAK + "Escuchar</button></div>" : "") + "</div>";
+  }
+  if (q.tip) h += '<div class="tip"><b>Consejo:</b> ' + esc(q.tip) + "</div>";
+  h += "</div>";
+  return h;
+}
+function learnBtn(id) {
+  const on = state.learned.has(id);
+  return '<button type="button" class="btn small learn" data-learn="' + id + '" aria-pressed="' + on + '">' + (on ? ICON_CHECK + "Me la sé" : "Ya me la sé") + "</button>";
+}
+function ticketHTML(q, n) {
+  let h = '<article class="ticket' + (state.learned.has(q.id) ? " learned" : "") + '" id="t-' + q.id + '">';
+  h += '<div class="ticket-head"><span class="num">N.º ' + pad(n) + "</span>" + learnBtn(q.id) + "</div>";
+  h += '<h3 class="q" lang="en">' + esc(q.q) + "</h3>";
+  h += '<p class="q-es">' + esc(q.qes) + "</p>";
+  if (q.also && q.also.length) {
+    h += '<div class="also">También te lo pueden preguntar así:<ul>' + q.also.map(a => '<li lang="en">' + esc(a) + "</li>").join("") + "</ul></div>";
+  }
+  h += '<div class="actions">' + sayBtns("q:" + q.id, "Escuchar pregunta", true) +
+    '<button type="button" class="btn reveal" data-reveal="' + q.id + '">' + ICON_EYE + "Ver respuesta</button></div>";
+  h += answerHTML(q);
+  h += "</article>";
+  return h;
+}
+function sectionHead(s, count, unit) {
+  return '<div class="section-head"><h2>' + esc(s.title) + (count ? '<span class="n">' + count + " " + unit + "</span>" : "") + "</h2><p>" + esc(s.intro) + "</p></div>";
+}
+function renderDeck() {
+  const deck = document.getElementById("deck");
+  let n = 0;
+  let html = "";
+  SECTIONS.forEach(s => {
+    html += '<section class="section" data-sec="' + s.id + '">';
+    if (s.id === "frases") {
+      html += sectionHead(s, PHRASES.length, "frases");
+      PHRASES.forEach(p => {
+        html += '<article class="ticket phrase"><p class="en" lang="en">' + esc(p.en) + '</p><p class="es">' + esc(p.es) + '</p><p class="say">' + esc(p.say) + "</p>" +
+          (p.tip ? '<div class="tip"><b>Consejo:</b> ' + esc(p.tip) + "</div>" : "") +
+          (synth ? '<div class="row">' + sayBtns("p:" + p.id, "Escuchar", false) + "</div>" : "") + "</article>";
+      });
+    } else if (s.id === "consejos") {
+      html += sectionHead(s, 0, "");
+      html += '<div class="tips">' + TIPS.map(t => '<div class="tipcard"><h3>' + esc(t.h) + "</h3>" +
+        (t.p ? "<p>" + esc(t.p) + "</p>" : "<ul>" + t.list.map(i => "<li>" + esc(i) + "</li>").join("") + "</ul>") + "</div>").join("") + "</div>";
+      html += '<div class="section-head"><h2 style="font-size:1.25rem">Palabras de Disney</h2><p>Úsalas en tus respuestas: se nota que conoces la cultura.</p></div>';
+      html += '<div class="gloss-wrap"><table class="gloss"><thead><tr><th>En vez de</th><th>Di</th><th>Significa</th></tr></thead><tbody>' +
+        GLOSS.map(g => '<tr><td lang="en">' + esc(g[0]) + '</td><td lang="en">' + esc(g[1]) + "</td><td>" + esc(g[2]) + "</td></tr>").join("") + "</tbody></table></div>";
+    } else {
+      const items = QA.filter(q => q.sec === s.id);
+      html += sectionHead(s, items.length, items.length === 1 ? "pregunta" : "preguntas");
+      items.forEach(q => { n = QA.indexOf(q) + 1; html += ticketHTML(q, n); });
+    }
+    html += "</section>";
+  });
+  deck.innerHTML = html;
+  deck.classList.toggle("hiding", state.hide);
+  applyFilter();
+}
+function renderChips() {
+  const chips = document.getElementById("chips");
+  const all = [{ id: "all", title: "Todo", n: QA.length }].concat(SECTIONS.map(s => ({
+    id: s.id, title: s.title,
+    n: s.id === "frases" ? PHRASES.length : s.id === "consejos" ? 0 : QA.filter(q => q.sec === s.id).length
+  })));
+  chips.innerHTML = all.map(c => '<button type="button" class="chip" data-filter="' + c.id + '" aria-pressed="' + (state.filter === c.id) + '">' +
+    esc(c.title) + (c.n ? '<span class="n">' + c.n + "</span>" : "") + "</button>").join("");
+}
+function applyFilter() {
+  document.querySelectorAll("#deck .section").forEach(el => {
+    el.hidden = !(state.filter === "all" || el.dataset.sec === state.filter);
+  });
+  document.querySelectorAll("#chips .chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.filter === state.filter)));
+}
+function renderProgress() {
+  const done = QA.filter(q => state.learned.has(q.id)).length;
+  document.getElementById("progress-count").textContent = done + " de " + QA.length;
+  document.getElementById("progress-fill").style.width = Math.round(done / QA.length * 100) + "%";
+}
+
+/* Simulacro */
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function newSim() {
+  state.sim = { order: shuffle(QA.map(q => q.id)), idx: 0, text: false, answer: false };
+}
+function renderSim() {
+  const el = document.getElementById("sim");
+  const sim = state.sim;
+  const q = byId[sim.order[sim.idx]];
+  let h = '<div class="section-head"><h2>Simulacro</h2><p>Escucha cada pregunta como si fuera la entrevistadora, responde en voz alta y luego compara con tu respuesta. Las preguntas salen en desorden, como en la vida real.</p></div>';
+  h += '<article class="ticket sim-card">';
+  h += '<div class="ticket-head"><span class="num">Pregunta ' + pad(sim.idx + 1) + " de " + sim.order.length + " · " + esc(secTitle[q.sec]) + "</span>" + learnBtn(q.id) + "</div>";
+  h += '<div class="body">';
+  if (!synth) h += '<p class="sim-hint">Sin audio en este navegador: lee la pregunta y respóndela en voz alta.</p>';
+  if (sim.text || !synth) {
+    h += '<h3 class="q" style="margin:0" lang="en">' + esc(q.q) + '</h3><p class="q-es" style="margin:0">' + esc(q.qes) + "</p>";
+  } else {
+    h += '<p class="sim-hint">Primero intenta entenderla solo escuchando. Si no, mira la pregunta escrita.</p>';
+  }
+  h += "</div>";
+  h += '<div class="actions">' + sayBtns("q:" + q.id, "Escuchar pregunta", true) +
+    (sim.text || !synth ? "" : '<button type="button" class="btn" data-sim="text">' + ICON_EYE + "Ver pregunta escrita</button>") +
+    (sim.answer ? "" : '<button type="button" class="btn" data-sim="answer">' + ICON_EYE + "Ver respuesta</button>") + "</div>";
+  if (sim.answer) h += answerHTML(q);
+  h += '<div class="sim-nav"><button type="button" class="btn" data-sim="prev"' + (sim.idx === 0 ? " disabled" : "") + '>Anterior</button>' +
+    '<div class="grow"><button type="button" class="btn" data-sim="shuffle">Barajar otra vez</button>' +
+    '<button type="button" class="btn primary" data-sim="next">' + (sim.idx === sim.order.length - 1 ? "Terminar" : "Siguiente") + "</button></div></div>";
+  h += "</article>";
+  el.innerHTML = h;
+}
+function setMode(mode) {
+  stopSpeaking();
+  state.mode = mode;
+  document.querySelectorAll(".mode").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+  document.getElementById("deck").hidden = mode !== "study";
+  document.getElementById("rail").hidden = mode !== "study";
+  document.getElementById("sim").hidden = mode !== "sim";
+  if (mode === "sim") { if (!state.sim.order.length) newSim(); renderSim(); }
+}
+
+/* Events */
+document.addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.say) { speak(textFor(t.dataset.say), parseFloat(t.dataset.rate) || 0.92, t); return; }
+  if (t.dataset.filter) {
+    state.filter = t.dataset.filter;
+    applyFilter();
+    const rail = document.getElementById("rail");
+    const top = document.getElementById("deck").getBoundingClientRect().top + window.scrollY - rail.offsetHeight - 8;
+    if (window.scrollY > top) window.scrollTo({ top: top, behavior: "smooth" });
+    return;
+  }
+  if (t.dataset.learn) {
+    const id = t.dataset.learn;
+    if (state.learned.has(id)) state.learned.delete(id); else state.learned.add(id);
+    store.set("ld-learned", Array.from(state.learned));
+    document.querySelectorAll('[data-learn="' + id + '"]').forEach(b => {
+      const on = state.learned.has(id);
+      b.setAttribute("aria-pressed", String(on));
+      b.innerHTML = on ? ICON_CHECK + "Me la sé" : "Ya me la sé";
+    });
+    const tk = document.getElementById("t-" + id);
+    if (tk) tk.classList.toggle("learned", state.learned.has(id));
+    renderProgress();
+    return;
+  }
+  if (t.dataset.reveal) {
+    const tk = document.getElementById("t-" + t.dataset.reveal);
+    if (tk) {
+      tk.classList.toggle("open");
+      t.innerHTML = ICON_EYE + (tk.classList.contains("open") ? "Esconder respuesta" : "Ver respuesta");
+    }
+    return;
+  }
+  if (t.dataset.mode) { setMode(t.dataset.mode); return; }
+  if (t.dataset.sim) {
+    const sim = state.sim;
+    const act = t.dataset.sim;
+    if (act === "text") sim.text = true;
+    if (act === "answer") { sim.answer = true; sim.text = true; }
+    if (act === "shuffle") { stopSpeaking(); newSim(); }
+    if (act === "prev" && sim.idx > 0) { stopSpeaking(); sim.idx--; sim.text = false; sim.answer = false; }
+    if (act === "next") {
+      stopSpeaking();
+      if (sim.idx < sim.order.length - 1) { sim.idx++; } else { newSim(); }
+      sim.text = false; sim.answer = false;
+    }
+    renderSim();
+    if ((act === "next" || act === "prev" || act === "shuffle") && synth) {
+      const btn = document.querySelector('#sim [data-say][data-rate="0.92"]');
+      speak(byId[sim.order[sim.idx]].q, 0.92, btn);
+    }
+    return;
+  }
+});
+
+const nameInput = document.getElementById("name");
+nameInput.value = state.name;
+nameInput.addEventListener("input", () => {
+  state.name = nameInput.value.trim();
+  store.set("ld-name", state.name);
+  document.querySelectorAll(".name-slot").forEach(s => { s.textContent = state.name || "tu nombre"; });
+});
+const hideBox = document.getElementById("hide");
+hideBox.checked = state.hide;
+hideBox.addEventListener("change", () => {
+  state.hide = hideBox.checked;
+  store.set("ld-hide", state.hide);
+  const deck = document.getElementById("deck");
+  deck.classList.toggle("hiding", state.hide);
+  deck.querySelectorAll(".ticket.open").forEach(tk => tk.classList.remove("open"));
+  deck.querySelectorAll("[data-reveal]").forEach(b => { b.innerHTML = ICON_EYE + "Ver respuesta"; });
+});
+
+renderChips();
+renderDeck();
+renderProgress();
+</script>
+
+</body>
+</html>
