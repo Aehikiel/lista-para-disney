@@ -4,26 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
-<title>Lista para Disney</title>
+<title>Lista para FCS</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: phone-first study deck. Header, sticky filter rail, then stacked order tickets; each answer sits below a perforated tear line. */
+/* Layout: phone-first study deck, same engine as "Lista para Disney". Appointment card + progress, sticky topic rail, stacked question tickets with the answer below a tear line. */
 :root {
-  --bg: #EEF3F2;
+  --bg: #EEF1F6;
   --surface: #FFFFFF;
-  --answer: #F5F9F8;
-  --ink: #14232A;
-  --muted: #53676D;
-  --line: #D2DEDC;
-  --accent: #0B7471;
+  --answer: #F5F7FB;
+  --ink: #172033;
+  --muted: #56607A;
+  --line: #D5DBE6;
+  --accent: #2C5AA0;
   --accent-ink: #FFFFFF;
-  --accent-soft: #D6EDEB;
-  --sun: #E08A22;
-  --sun-soft: #FCEBD3;
-  --sun-ink: #6E4208;
+  --accent-soft: #DCE6F5;
+  --sun: #D9822B;
+  --sun-soft: #FBEAD6;
+  --sun-ink: #6B3F0B;
   --ok: #1D7446;
   --ok-soft: #DDF1E5;
   --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
@@ -33,14 +33,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0E171A; --surface: #152226; --answer: #1A2B30; --ink: #E5EEED; --muted: #98ABAE; --line: #2B3E43;
-    --accent: #4CC3BE; --accent-ink: #062A2A; --accent-soft: #163B3C; --sun: #F2B15A; --sun-soft: #3A2A14; --sun-ink: #F6D29E;
+    --bg: #0F1420; --surface: #171E2D; --answer: #1C2536; --ink: #E6EAF2; --muted: #9BA6BC; --line: #2C3649;
+    --accent: #7FA8E8; --accent-ink: #0B1730; --accent-soft: #1C2C4A; --sun: #F2B15A; --sun-soft: #3A2A14; --sun-ink: #F6D29E;
     --ok: #74D6A1; --ok-soft: #173527; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0E171A; --surface: #152226; --answer: #1A2B30; --ink: #E5EEED; --muted: #98ABAE; --line: #2B3E43;
-  --accent: #4CC3BE; --accent-ink: #062A2A; --accent-soft: #163B3C; --sun: #F2B15A; --sun-soft: #3A2A14; --sun-ink: #F6D29E;
+  --bg: #0F1420; --surface: #171E2D; --answer: #1C2536; --ink: #E6EAF2; --muted: #9BA6BC; --line: #2C3649;
+  --accent: #7FA8E8; --accent-ink: #0B1730; --accent-soft: #1C2C4A; --sun: #F2B15A; --sun-soft: #3A2A14; --sun-ink: #F6D29E;
   --ok: #74D6A1; --ok-soft: #173527; color-scheme: dark;
 }
 
@@ -76,15 +76,15 @@ h1 {
 }
 .lead { margin: 0; max-width: 60ch; color: var(--muted); }
 .lead strong { color: var(--ink); }
-.setup { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.setup { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; }
 @media (max-width: 560px) { .setup { grid-template-columns: 1fr; } }
-.field, .progress {
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 6px; min-width: 0;
+.appt, .progress {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 6px; min-width: 0; align-content: start;
 }
-.field label, .progress-label { font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-.field input {
-  font: inherit; font-size: 1.05rem; color: var(--ink); background: var(--answer); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 100%;
-}
+.appt-label, .progress-label { font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.appt-when { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; }
+.appt-meta { margin: 0; color: var(--muted); font-size: .95rem; }
+.countdown { justify-self: start; margin-top: 2px; font-family: var(--font-mono); font-size: .82rem; background: var(--accent-soft); color: var(--accent); padding: 3px 10px; border-radius: 999px; }
 .progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .progress-count { font-family: var(--font-mono); font-size: .95rem; font-variant-numeric: tabular-nums; }
 .bar { height: 10px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
@@ -96,7 +96,7 @@ h1 {
 .mode[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 .notice { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--sun-soft); color: var(--sun-ink); font-size: .95rem; }
 
-/* Sticky filter rail */
+/* Sticky topic rail */
 .rail {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line);
 }
@@ -123,6 +123,7 @@ h1 {
 }
 .section-head h2 .n { font-family: var(--font-mono); font-weight: 500; font-size: .8rem; color: var(--muted); letter-spacing: 0; }
 .section-head p { margin: 0; color: var(--muted); max-width: 62ch; }
+.sub-head h2 { font-size: 1.25rem; }
 
 .ticket {
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; min-width: 0;
@@ -145,6 +146,7 @@ h1 {
 }
 .btn svg { width: 18px; height: 18px; flex: none; }
 .btn:hover { border-color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 700; }
 .btn.playing { box-shadow: 0 0 0 3px var(--sun); }
 .btn.small { min-height: 36px; padding: 6px 12px; font-size: .88rem; }
@@ -165,7 +167,6 @@ h1 {
 .a-en { margin: 0; font-size: 1.2rem; line-height: 1.5; max-width: 62ch; }
 .a-es { margin: 0; color: var(--muted); max-width: 62ch; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; }
-.name-slot { background: var(--sun-soft); color: var(--sun-ink); padding: 0 6px; border-radius: 6px; font-weight: 700; }
 .words { display: flex; flex-wrap: wrap; gap: 6px; }
 .word {
   display: inline-flex; align-items: baseline; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 11px; font-size: .9rem;
@@ -185,6 +186,24 @@ h1 {
 .phrase .es { margin: 0; color: var(--muted); }
 .phrase .say { margin: 0; font-family: var(--font-mono); font-size: .86rem; color: var(--accent); }
 
+/* Checklist */
+.checks { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 6px 0; display: grid; }
+.check { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 10px 16px; cursor: pointer; border-bottom: 1px solid var(--line); }
+.check:last-child { border-bottom: 0; }
+.check input { width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--ok); }
+.check .when { display: block; font-family: var(--font-mono); font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.check input:checked + span { color: var(--muted); }
+.check input:checked + span .what { text-decoration: line-through; }
+
+/* Data at hand */
+.data-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.data { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.data th, .data td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.data tr:last-child th, .data tr:last-child td { border-bottom: 0; }
+.data th { font-weight: 700; color: var(--muted); font-size: .85rem; white-space: nowrap; }
+.data td { font-variant-numeric: tabular-nums; }
+.data td .mono { font-family: var(--font-mono); font-size: .9rem; }
+
 /* Tips */
 .tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 620px) { .tips { grid-template-columns: 1fr; } }
@@ -192,13 +211,6 @@ h1 {
 .tipcard h3 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
 .tipcard p, .tipcard ul { margin: 0; color: var(--muted); }
 .tipcard ul { padding-left: 18px; }
-.gloss-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
-.gloss { width: 100%; border-collapse: collapse; font-size: .95rem; }
-.gloss th, .gloss td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
-.gloss tr:last-child td { border-bottom: 0; }
-.gloss th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-.gloss td:nth-child(2) { font-weight: 700; color: var(--accent); white-space: nowrap; }
-.gloss td:first-child s { color: var(--muted); }
 
 /* Simulacro */
 .sim { padding-block: 24px 40px; display: grid; gap: 14px; }
@@ -214,17 +226,19 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
-
 </head>
 <body>
+
 <header class="wrap hero">
-  <p class="eyebrow">Entrevista · Walt Disney World · Food &amp; Beverage</p>
-  <h1>Lista para Disney</h1>
-  <p class="lead">Preguntas que se repiten en las entrevistas de Disney, cada una con una <strong>respuesta corta en inglés</strong>, su traducción y cómo se pronuncian las palabras difíciles. Escúchala, repítela en voz alta y márcala cuando ya te la sepas.</p>
+  <p class="eyebrow">Llamada de preselección · Medical Assistant · Davenport</p>
+  <h1>Lista para FCS</h1>
+  <p class="lead">Las preguntas que suele hacer una reclutadora en la primera llamada para Medical Assistant, cada una con una <strong>respuesta corta en inglés</strong>, su traducción y cómo se pronuncian las palabras difíciles. Escúchala, repítela en voz alta y márcala cuando ya te la sepas.</p>
   <div class="setup">
-    <div class="field">
-      <label for="name">Tu nombre</label>
-      <input id="name" type="text" autocomplete="given-name" placeholder="Escríbelo y aparece en tus respuestas">
+    <div class="appt">
+      <span class="appt-label">Tu llamada</span>
+      <p class="appt-when">Viernes 6 de noviembre · 11:30 AM</p>
+      <p class="appt-meta">Hora de Florida · 30 minutos por Microsoft Teams · con Tracy Latarski</p>
+      <span class="countdown" id="countdown">Viernes 6 de noviembre</span>
     </div>
     <div class="progress" aria-live="polite">
       <div class="progress-top"><span class="progress-label">Ya te sabes</span><span id="progress-count" class="progress-count">0 de 0</span></div>
@@ -249,274 +263,301 @@ h1 {
 <section class="wrap sim" id="sim" hidden></section>
 
 <footer class="wrap foot">
-  <h2>De dónde salen las preguntas</h2>
+  <h2>De dónde sale esto</h2>
   <ul>
-    <li><a href="https://parksjobs.disneycareers.com/job/orlando/food-and-beverage-cast-member-seater-part-time-walt-disney-world/1678/82961492288" target="_blank" rel="noopener">Oferta oficial de Food &amp; Beverage en Walt Disney World</a> (alergias, menú, seguridad alimentaria)</li>
-    <li><a href="https://www.attractionsmanagement.com/attractions-news/Disney-adds-inclusion-to-its-values-allowing-staff-to-wear-personal-jewellery-and-display-tattoos/347554" target="_blank" rel="noopener">Las Cinco Claves de Disney</a></li>
-    <li><a href="https://forums.wdwmagic.com/threads/most-common-employment-questions-hourly.294908/page-5" target="_blank" rel="noopener">WDWMagic: experiencias de entrevistas por hora</a></li>
-    <li><a href="https://www.mockquestions.com/company/Walt+Disney+World+Co./print/" target="_blank" rel="noopener">MockQuestions: preguntas de Walt Disney World</a></li>
-    <li><a href="https://www.careertestprep.com/knowledge/disney-interview-questions" target="_blank" rel="noopener">Guía 2026 de entrevistas Disney</a></li>
+    <li>La descripción de la vacante de Medical Assistant en Davenport (horario, viajes, BLS, revisiones y vacunas).</li>
+    <li>El CV de Lilian y lo que respondió en la solicitud (certificaciones, sueldo esperado, disponibilidad).</li>
+    <li><a href="https://flcancer.wd1.myworkdayjobs.com/en-US/FLCancer_Careers" target="_blank" rel="noopener">Portal de empleos de FCS</a></li>
   </ul>
-  <p>Guía de estudio personal. No es material oficial de Disney.</p>
+  <p>Guía de estudio personal. No es material oficial de Florida Cancer Specialists.</p>
 </footer>
 
 <script>
+const CALL_AT = Date.parse("2026-11-06T11:30:00-05:00");
+
 const SECTIONS = [
-  { id: "ti", title: "Sobre ti", intro: "Casi siempre empiezan aquí. Son para conocerte: responde tranquila y con una sonrisa." },
-  { id: "disney", title: "Por qué Disney", intro: "Quieren ver que te interesa Disney de verdad y que conoces su forma de trabajar." },
-  { id: "sit", title: "Situaciones", intro: "Te ponen un caso y quieren saber qué harías. La regla de oro: la seguridad primero, luego la amabilidad." },
-  { id: "horario", title: "Horario y logística", intro: "Preguntas prácticas. En restaurantes, la flexibilidad pesa mucho." },
-  { id: "cierre", title: "Al cierre", intro: "Termina con interés y con la despedida típica de Disney." },
-  { id: "frases", title: "Frases salvavidas", intro: "Si no entiendes algo, no pasa nada. Usar estas frases se ve profesional." },
-  { id: "consejos", title: "Antes de entrar", intro: "Léelo una vez la noche antes y otra vez antes de la entrevista." }
+  { id: "ti", title: "Sobre ti", intro: "Casi siempre empieza así. Respuestas cortas, despacio y con una sonrisa: la reclutadora quiere conocerte y escuchar tu inglés." },
+  { id: "fcs", title: "Por qué FCS", intro: "Quieren ver que sabes dónde estás postulando y por qué te interesa trabajar con pacientes de cáncer." },
+  { id: "exp", title: "Tu preparación", intro: "Aquí explicas tus certificaciones y lo que aprendiste. Si no tienes experiencia pagada como MA, dilo con seguridad y muestra lo que sí tienes." },
+  { id: "sit", title: "Situaciones", intro: "Te ponen un caso y quieren saber qué harías. La regla de oro: la seguridad del paciente primero, luego la amabilidad." },
+  { id: "tec", title: "Si preguntan algo técnico", intro: "En una primera llamada es poco común, pero puede salir. En una entrevista con la gerente de la clínica, es muy probable." },
+  { id: "log", title: "Horario y logística", intro: "Preguntas prácticas. Responde según tu realidad: lo que digas aquí se revisa después." },
+  { id: "cierre", title: "Al cierre", intro: "Termina con interés, una o dos preguntas y un agradecimiento." },
+  { id: "frases", title: "Frases salvavidas", intro: "Si no entiendes algo, no pasa nada. Pedir que repitan se ve profesional; contestar algo que no entendiste, no." },
+  { id: "consejos", title: "Antes de la llamada", intro: "La lista para el jueves y el viernes, tus datos a mano y lo que conviene recordar." }
 ];
 
 const QA = [
   { id: "q01", sec: "ti", q: "Tell me about yourself.", qes: "Háblame de ti.",
-    also: ["Can you tell me a little about yourself?", "Please introduce yourself."],
-    a: "Hi! My name is {name}. I'm from Venezuela, and I have lived in the United States for almost ten years. I studied law, and I'm a lawyer in my country. I'm a friendly and responsible person. I love helping people, and I speak English and Spanish.",
-    aes: "¡Hola! Me llamo {name}. Soy de Venezuela y vivo en Estados Unidos desde hace casi diez años. Estudié Derecho y soy abogada en mi país. Soy una persona amable y responsable. Me encanta ayudar a la gente y hablo inglés y español.",
-    words: [["lawyer", "LÓ-yer"], ["responsible", "ris-PÓN-si-bol"], ["almost", "ÓL-moust"], ["Venezuela", "ve-ne-SUÉI-la"]],
-    tip: "Es casi siempre la primera pregunta. Dila sin prisa: hacer pausas es normal." },
-  { id: "q02", sec: "ti", q: "How would you describe your personality?", qes: "¿Cómo describirías tu personalidad?",
-    also: ["Describe yourself in three words.", "What would your friends say about you?"],
-    a: "I'm friendly, positive and patient. I like to smile, and I like to make people feel welcome. I also work very well in a team.",
-    aes: "Soy amable, positiva y paciente. Me gusta sonreír y hacer que la gente se sienta bienvenida. También trabajo muy bien en equipo.",
-    words: [["patient", "PÉI-shent"], ["welcome", "UÉL-kom"], ["positive", "PÓ-si-tiv"]],
-    tip: "Si te piden tres palabras, di solo: Friendly, positive and patient." },
-  { id: "q03", sec: "ti", q: "What are your strengths?", qes: "¿Cuáles son tus fortalezas?",
+    also: ["Can you tell me a little about yourself?", "Walk me through your background."],
+    a: "Hi! My name is Lilian Jimenez. I'm from Venezuela, and I have lived in the United States for almost ten years. In Venezuela, I studied law and worked in a notary office. Here, I decided to start a career in healthcare. I'm a certified Medical Assistant and a certified Phlebotomy Technician. I'm responsible, careful with details, and I love helping people.",
+    aes: "¡Hola! Me llamo Lilian Jimenez. Soy de Venezuela y vivo en Estados Unidos desde hace casi diez años. En Venezuela estudié Derecho y trabajé en una notaría. Aquí decidí empezar una carrera en salud. Soy Medical Assistant certificada y técnica en flebotomía certificada. Soy responsable, cuidadosa con los detalles y me encanta ayudar a la gente.",
+    words: [["healthcare", "JÉLZ-ker"], ["certified", "SÉR-ti-faid"], ["phlebotomy", "fle-BÓ-to-mi"], ["notary office", "NÓU-ta-ri Ó-fis"]],
+    tip: "Es casi siempre la primera pregunta. Dila sin prisa; hacer pausas es normal. No hace falta decirla perfecta, sino tranquila." },
+  { id: "q02", sec: "ti", q: "What are your strengths?", qes: "¿Cuáles son tus fortalezas?",
     also: ["What is your greatest strength?", "What are you good at?"],
-    a: "I'm very responsible. I always arrive on time, and I finish my work. I'm also a good listener. As a lawyer, I learned to stay calm and to find solutions for people.",
-    aes: "Soy muy responsable. Siempre llego a tiempo y termino mi trabajo. También sé escuchar. Como abogada, aprendí a mantener la calma y a buscar soluciones para la gente.",
-    words: [["listener", "LÍS-ner"], ["calm", "KAAM"], ["solutions", "so-LÚ-shons"]] },
-  { id: "q04", sec: "ti", q: "What is your greatest weakness?", qes: "¿Cuál es tu mayor debilidad?",
+    a: "I'm very responsible and careful with details. I always arrive on time, and I finish my work. I'm also calm and patient, and I'm good at listening to people.",
+    aes: "Soy muy responsable y cuidadosa con los detalles. Siempre llego a tiempo y termino mi trabajo. También soy tranquila y paciente, y sé escuchar a la gente.",
+    words: [["details", "DÍ-teils"], ["patient", "PÉI-shent"], ["listening", "LÍ-se-ning"]],
+    tip: "Patient tiene dos sentidos: paciente (la persona) y paciente (la virtud). Aquí es la virtud." },
+  { id: "q03", sec: "ti", q: "What is your greatest weakness?", qes: "¿Cuál es tu mayor debilidad?",
     also: ["What do you need to improve?"],
-    a: "Sometimes my English is not perfect. But I practice every day, and when I don't understand something, I ask. I'm improving very fast.",
-    aes: "A veces mi inglés no es perfecto. Pero practico todos los días y, cuando no entiendo algo, pregunto. Estoy mejorando muy rápido.",
+    a: "My English is not perfect yet. But I practice every day, and when I don't understand something, I ask. I'm improving very fast.",
+    aes: "Mi inglés todavía no es perfecto. Pero practico todos los días y, cuando no entiendo algo, pregunto. Estoy mejorando muy rápido.",
     words: [["weakness", "UÍK-nes"], ["improving", "im-PRÚ-ving"]],
-    tip: "Convierte tu miedo en una fortaleza: muestra honestidad y ganas de aprender. Dila tranquila." },
-  { id: "q05", sec: "ti", q: "How would you rate your English?", qes: "¿Cómo calificarías tu inglés?",
-    also: ["Are you comfortable speaking English with guests?"],
-    a: "I can communicate in English, and I'm improving every day. I also speak Spanish, so I can help many of our Spanish-speaking guests.",
-    aes: "Me puedo comunicar en inglés y mejoro cada día. Además hablo español, así que puedo ayudar a muchos de nuestros visitantes hispanohablantes.",
-    words: [["communicate", "co-MIÚ-ni-keit"], ["guests", "GUESTS (gue de guerra)"]],
-    tip: "Hablar español es una ventaja en Orlando: muchos visitantes son latinos. Dilo con orgullo." },
-  { id: "q06", sec: "ti", q: "Why should we hire you?", qes: "¿Por qué deberíamos contratarte?",
-    also: ["Why are you the best person for this job?"],
-    a: "Because I'm responsible, I love working with people, and I really want to grow with Disney. I also speak Spanish, so I can help many guests. I will give my best every day.",
-    aes: "Porque soy responsable, me encanta trabajar con gente y de verdad quiero crecer con Disney. También hablo español, así que puedo ayudar a muchos visitantes. Daré lo mejor de mí todos los días.",
-    words: [["hire", "JÁI-er"], ["grow", "GRÓU"]] },
-  { id: "q07", sec: "ti", q: "Tell me about your current job.", qes: "Cuéntame de tu trabajo actual.",
+    tip: "Ella ya lo va a notar en la llamada, así que decirlo tú primero te hace ver honesta y segura." },
+  { id: "q04", sec: "ti", q: "Are you comfortable speaking English with patients?", qes: "¿Te sientes cómoda hablando inglés con los pacientes?",
+    also: ["How would you rate your English?", "This job requires good English. Is that OK for you?"],
+    a: "Yes. I can communicate in English, and I understand more than I speak. I'm improving every day. I also speak Spanish, and many patients in this area speak Spanish, so I can help them feel comfortable.",
+    aes: "Sí. Me puedo comunicar en inglés y entiendo más de lo que hablo. Mejoro cada día. Además hablo español, y muchos pacientes de esta zona hablan español, así que puedo ayudarlos a sentirse cómodos.",
+    words: [["communicate", "co-MIÚ-ni-keit"], ["comfortable", "KÓMF-ter-bol"], ["area", "É-ri-a"]],
+    tip: "La vacante dice que un segundo idioma suma. En Davenport y Kissimmee hay muchos pacientes hispanos: dilo con orgullo." },
+  { id: "q05", sec: "ti", q: "Tell me about your current job.", qes: "Cuéntame de tu trabajo actual.",
     also: ["What do you do now?", "Are you working right now?"],
-    a: "I paint apartments. It's physical work, so I'm used to standing and working long hours. I'm very careful with details, and I always finish on time.",
-    aes: "Pinto apartamentos. Es un trabajo físico, así que estoy acostumbrada a estar de pie y trabajar muchas horas. Soy muy cuidadosa con los detalles y siempre termino a tiempo.",
-    words: [["physical", "FÍ-si-col"], ["used to", "IÚS-tu"], ["details", "DÍ-teils"]],
-    tip: "Este trabajo te suma: en un restaurante de Disney pasas el día de pie y moviéndote." },
-  { id: "q08", sec: "ti", q: "Why do you want to leave your current job?", qes: "¿Por qué quieres dejar tu trabajo actual?",
+    a: "I work as a painter with a painting company. It's physical work, and I have to be very careful with details. I always finish my work on time, and I work well with my team.",
+    aes: "Trabajo como pintora con una empresa de pintura. Es un trabajo físico y tengo que ser muy cuidadosa con los detalles. Siempre termino mi trabajo a tiempo y trabajo bien con mi equipo.",
+    words: [["painter", "PÉIN-ter"], ["physical", "FÍ-si-col"], ["company", "KÓM-pa-ni"]] },
+  { id: "q06", sec: "ti", q: "Why do you want to leave your current job?", qes: "¿Por qué quieres dejar tu trabajo actual?",
     also: ["Why are you looking for a new job?"],
-    a: "I'm thankful for my job, but I'm looking for a stable company with benefits and opportunities to grow. Disney is that company for me.",
-    aes: "Agradezco mi trabajo, pero busco una empresa estable, con beneficios y oportunidades para crecer. Para mí, Disney es esa empresa.",
-    words: [["stable", "STÉI-bol"], ["benefits", "BÉ-ne-fits"], ["opportunities", "o-por-TIÚ-ni-tis"]],
-    tip: "Nunca hables mal de tu trabajo actual. Empezar agradeciendo te hace ver profesional." },
-  { id: "q09", sec: "ti", q: "You studied law. Why do you want to work in a restaurant?", qes: "Estudiaste Derecho. ¿Por qué quieres trabajar en un restaurante?",
-    also: ["This job is very different from being a lawyer. Why this job?"],
-    a: "I'm starting a new chapter here, and I'm happy to start at Disney. As a lawyer, I helped people every day. In a restaurant, I can also help people and make their day better. My experience helps me stay calm and organized.",
-    aes: "Estoy empezando una nueva etapa aquí y me alegra empezar en Disney. Como abogada, ayudaba a la gente todos los días. En un restaurante también puedo ayudar a la gente y mejorarle el día. Mi experiencia me ayuda a mantener la calma y ser organizada.",
-    words: [["chapter", "CHÁP-ter"], ["organized", "ÓR-ga-naist"]],
-    tip: "La preguntan porque pueden pensar que estás sobrecalificada. Muestra que lo ves como un buen comienzo, no como algo menor." },
-  { id: "q10", sec: "ti", q: "What do you like to do in your free time?", qes: "¿Qué te gusta hacer en tu tiempo libre?",
-    also: ["What do you do for fun?"],
-    a: "I like to spend time with my family, cook, and watch movies. On my days off, I like to visit new places here in Florida.",
-    aes: "Me gusta pasar tiempo con mi familia, cocinar y ver películas. En mis días libres me gusta conocer lugares nuevos aquí en Florida.",
-    words: [["days off", "DEIS of"]],
-    tip: "Cámbiala por lo que de verdad te gusta. Si es verdad, sale natural." },
+    a: "I'm thankful for my job, but I studied to work in healthcare. Now I'm certified, and I'm ready to start my career as a Medical Assistant.",
+    aes: "Agradezco mi trabajo, pero estudié para trabajar en salud. Ya estoy certificada y lista para empezar mi carrera como Medical Assistant.",
+    words: [["thankful", "ZÉNK-ful"], ["career", "ca-RÍ-ar"], ["ready", "RÉ-di"]],
+    tip: "Nunca hables mal de tu trabajo actual. Empezar agradeciendo se ve profesional." },
+  { id: "q07", sec: "ti", q: "You studied law. Why do you want to be a Medical Assistant?", qes: "Estudiaste Derecho. ¿Por qué quieres ser Medical Assistant?",
+    also: ["This is very different from being a lawyer. Why healthcare?"],
+    a: "I always liked helping people. As a lawyer, I helped people with their problems. Now I want to help patients with their health. That's why I studied to be a Medical Assistant and a Phlebotomy Technician.",
+    aes: "Siempre me gustó ayudar a la gente. Como abogada, ayudaba a la gente con sus problemas. Ahora quiero ayudar a los pacientes con su salud. Por eso estudié para ser Medical Assistant y técnica en flebotomía.",
+    words: [["lawyer", "LÓ-yer"], ["health", "JELZ"], ["technician", "tek-NÍ-shan"]],
+    tip: "La hacen para saber si te vas a quedar. Muestra que es una decisión pensada: estudiaste y te certificaste dos veces." },
+  { id: "q08", sec: "ti", q: "Why should we hire you?", qes: "¿Por qué deberíamos contratarte?",
+    also: ["Why are you the right person for this job?"],
+    a: "Because I'm certified, I'm responsible, and I really care about patients. I learn fast, I follow procedures, and I speak Spanish. I will give my best every day.",
+    aes: "Porque estoy certificada, soy responsable y de verdad me importan los pacientes. Aprendo rápido, sigo los procedimientos y hablo español. Daré lo mejor de mí todos los días.",
+    words: [["hire", "JÁI-er"], ["procedures", "pro-SÍ-yurs"], ["care about", "KER a-BÁUT"]] },
 
-  { id: "q11", sec: "disney", q: "Why do you want to work for Disney?", qes: "¿Por qué quieres trabajar en Disney?",
-    also: ["What made you apply?", "Why Disney and not another company?"],
-    a: "Disney creates happy memories for families from all over the world, and I want to be part of that. I also know that Disney takes care of its cast members and gives them opportunities to learn and grow.",
-    aes: "Disney crea recuerdos felices para familias de todo el mundo, y quiero ser parte de eso. También sé que Disney cuida a sus cast members y les da oportunidades para aprender y crecer.",
-    words: [["memories", "MÉ-mo-ris"], ["cast members", "KAST MÉM-bers"]],
-    tip: "Di cast members y no employees: así llama Disney a sus trabajadores, y se nota que hiciste la tarea." },
-  { id: "q12", sec: "disney", q: "Why do you want to work in Food and Beverage?", qes: "¿Por qué quieres trabajar en Food & Beverage (comidas y bebidas)?",
-    also: ["Why did you choose this role?"],
-    a: "Food is a big part of a great vacation. I like to serve people, to work fast and to work in a team. With a smile and good service, I can make a guest's day better.",
-    aes: "La comida es una parte importante de unas buenas vacaciones. Me gusta atender a la gente, trabajar rápido y en equipo. Con una sonrisa y un buen servicio, puedo mejorarle el día a un visitante.",
-    words: [["beverage", "BÉ-ve-rich"], ["vacation", "vei-KÉI-shon"], ["role", "RÓUL"]] },
-  { id: "q13", sec: "disney", q: "What is your favorite Disney movie or character? Why?", qes: "¿Cuál es tu película o personaje favorito de Disney? ¿Por qué?",
-    also: ["Who is your favorite Disney character?"],
-    a: "My favorite movie is Encanto, because it's about family. It reminds me of my family and my home in Latin America.",
-    aes: "Mi película favorita es Encanto, porque trata sobre la familia. Me recuerda a mi familia y a mi hogar en Latinoamérica.",
-    words: [["favorite", "FÉI-vo-rit"], ["reminds", "ri-MÁINDS"]],
-    tip: "Es muy común y es para conocerte. Cambia la película por tu favorita de verdad y da UNA razón." },
-  { id: "q14", sec: "disney", q: "Have you been to Walt Disney World? What is your favorite park?", qes: "¿Has ido a Walt Disney World? ¿Cuál es tu parque favorito?",
-    also: ["What is your favorite attraction?"],
-    a: "Yes! My favorite park is EPCOT, because you can visit many countries in one day. I love the food there, too.",
-    aes: "¡Sí! Mi parque favorito es EPCOT, porque puedes visitar muchos países en un solo día. También me encanta la comida de allí.",
-    words: [["EPCOT", "ÉP-kot"], ["countries", "KÁN-tris"]],
-    alt: { label: "Si nunca has ido", en: "Not yet, but I'm very excited to see the magic from the inside.", es: "Todavía no, pero me emociona mucho ver la magia desde adentro." } },
-  { id: "q15", sec: "disney", q: "Do you know Disney's Five Keys?", qes: "¿Conoces las Cinco Claves de Disney?",
-    also: ["What is most important when you serve guests?"],
-    a: "Yes. The Five Keys are Safety, Courtesy, Inclusion, Show and Efficiency. Safety always comes first.",
-    aes: "Sí. Las Cinco Claves son Seguridad, Cortesía, Inclusión, Espectáculo y Eficiencia. La seguridad siempre va primero.",
-    words: [["Safety", "SÉIF-ti"], ["Courtesy", "KÉR-te-si"], ["Inclusion", "in-KLÚ-shon"], ["Efficiency", "i-FÍ-shen-si"]],
-    tip: "Son los valores con los que Disney entrena a todo el personal. Si dices safety first en otras respuestas, sumas puntos." },
-  { id: "q16", sec: "disney", q: "What does great guest service mean to you?", qes: "¿Qué significa para ti un gran servicio al visitante?",
-    also: ["What is good customer service?"],
-    a: "It means that every guest feels welcome and special. I smile, I listen, and I help quickly. And if I don't know the answer, I find someone who does.",
-    aes: "Significa que cada visitante se sienta bienvenido y especial. Sonrío, escucho y ayudo rápido. Y si no sé la respuesta, busco a alguien que sí la sepa.",
-    words: [["special", "SPÉ-shal"], ["quickly", "KUÍK-li"]] },
-  { id: "q17", sec: "disney", q: "Are you comfortable wearing a costume and following the Disney Look?", qes: "¿Te sientes cómoda usando el uniforme y siguiendo las normas de imagen de Disney?",
-    also: ["Are you OK with wearing a uniform?"],
-    a: "Yes, of course. The costume is part of the show, and I'm happy to follow the guidelines.",
-    aes: "Sí, claro. El uniforme es parte del espectáculo y con gusto sigo las normas.",
-    words: [["costume", "KÓS-tum"], ["guidelines", "GÁID-lains"], ["comfortable", "KÓMF-ter-bol"]],
-    tip: "En Disney el uniforme se llama costume, y el Disney Look son las normas de imagen (cabello, uñas, accesorios)." },
+  { id: "q09", sec: "fcs", q: "Why do you want to work at Florida Cancer Specialists?", qes: "¿Por qué quieres trabajar en Florida Cancer Specialists?",
+    also: ["Why FCS?", "What made you apply to this position?"],
+    a: "FCS gives great care to patients with cancer, and I want to be part of that. It's a big company, so I can learn and grow here. Also, I live in Haines City, so the Davenport office is close to my home.",
+    aes: "FCS da una gran atención a pacientes con cáncer y quiero ser parte de eso. Es una empresa grande, así que aquí puedo aprender y crecer. Además, vivo en Haines City, así que la oficina de Davenport me queda cerca.",
+    words: [["specialists", "SPÉ-sha-lists"], ["Haines City", "JÉINS SÍ-ti"], ["Davenport", "DÁ-ven-port"]],
+    tip: "Decir que vives cerca suma: a las clínicas les preocupa que la gente llegue tarde o renuncie por la distancia." },
+  { id: "q10", sec: "fcs", q: "What do you know about FCS?", qes: "¿Qué sabes de FCS?",
+    also: ["What do you know about our company?"],
+    a: "FCS takes care of patients with cancer and blood disorders. It has almost one hundred locations in Florida, and it offers more clinical trials than any other private oncology practice in Florida.",
+    aes: "FCS atiende a pacientes con cáncer y enfermedades de la sangre. Tiene casi cien sedes en Florida y ofrece más estudios clínicos que cualquier otra práctica privada de oncología en Florida.",
+    words: [["blood disorders", "BLOD dis-ÓR-ders"], ["clinical trials", "KLÍ-ni-col TRÁI-als"], ["oncology", "on-KÓ-lo-yi"], ["locations", "lou-KÉI-shons"]],
+    tip: "Son datos que FCS publica en sus propias vacantes. Con uno o dos basta para mostrar que hiciste la tarea." },
+  { id: "q11", sec: "fcs", q: "Are you comfortable working with cancer patients?", qes: "¿Te sientes cómoda trabajando con pacientes de cáncer?",
+    also: ["This can be an emotional job. How do you feel about that?"],
+    a: "Yes. I know these patients and their families can be scared or tired. I will be kind, patient, and calm with them. I want them to feel safe and cared for.",
+    aes: "Sí. Sé que estos pacientes y sus familias pueden estar asustados o cansados. Voy a ser amable, paciente y tranquila con ellos. Quiero que se sientan seguros y bien atendidos.",
+    words: [["scared", "SKÉRD"], ["kind", "KÁIND"], ["cared for", "KÉRD for"]],
+    tip: "Si tienes una razón personal para querer trabajar en oncología, puedes contarla en una sola frase, solo si te sientes cómoda." },
+  { id: "q12", sec: "fcs", q: "I see you also applied for the Lab Assistant position. Can you tell me about that?", qes: "Veo que también postulaste a Lab Assistant. ¿Me cuentas?",
+    also: ["Which position are you more interested in?"],
+    a: "Yes. I'm very interested in lab work and blood draws. But I understand that position needs experience at FCS first. My main goal right now is the Medical Assistant position, and in the future I would love to grow into the lab.",
+    aes: "Sí. Me interesa mucho el trabajo de laboratorio y la toma de muestras. Pero entiendo que ese puesto pide experiencia previa en FCS. Mi meta principal ahora es el puesto de Medical Assistant, y en el futuro me encantaría crecer hacia el laboratorio.",
+    words: [["blood draws", "BLOD drós"], ["main goal", "MÉIN góul"], ["grow into", "GRÓU in-tu"]],
+    tip: "Puede que no salga. Si sale, esta respuesta convierte las dos postulaciones en algo positivo: muestra que quieres crecer dentro de FCS." },
 
-  { id: "q18", sec: "sit", q: "Tell me about a time you gave great service to someone.", qes: "Cuéntame de una vez que diste un gran servicio a alguien.",
-    also: ["Tell me about a time you went above and beyond for a customer."],
-    a: "When I worked as a lawyer, a woman came to my office very worried about a family problem. I listened to her, I explained everything in simple words, and I helped her step by step. In the end, she felt calm, and she was very thankful.",
-    aes: "Cuando trabajaba como abogada, una señora llegó a mi oficina muy preocupada por un problema familiar. La escuché, le expliqué todo con palabras sencillas y la ayudé paso a paso. Al final se sintió tranquila y me lo agradeció mucho.",
-    words: [["worried", "UÓ-rid"], ["explained", "ex-PLÉIND"], ["thankful", "ZÉNK-ful"]],
-    tip: "Usa una historia real tuya con esta forma: qué pasó, qué hiciste y cómo terminó. Si la tuya es de otro trabajo, también sirve." },
-  { id: "q19", sec: "sit", q: "How would you handle an upset guest?", qes: "¿Qué harías con un visitante molesto?",
-    also: ["What would you do if a guest complains?", "How do you deal with an angry customer?"],
-    a: "First, I stay calm and I listen. I say, 'I'm so sorry about that. Let me help you.' Then I try to fix the problem quickly. If I can't fix it, I call my leader.",
-    aes: "Primero mantengo la calma y escucho. Digo: 'Lo siento mucho. Déjeme ayudarle.' Luego intento resolver el problema rápido. Si no puedo, llamo a mi líder.",
-    words: [["upset", "ap-SÉT"], ["leader", "LÍ-der"], ["complains", "com-PLÉINS"]],
-    tip: "En Disney al supervisor se le dice leader. Nunca discutas con el visitante: escuchar primero es la clave." },
-  { id: "q20", sec: "sit", q: "A guest says their food is wrong or cold. What do you do?", qes: "Un visitante dice que su comida está mal o fría. ¿Qué haces?",
-    also: ["A guest is not happy with their meal. What do you do?"],
-    a: "I apologize, and I take the plate. I tell the kitchen right away, and I tell the guest how long it will take. Then I check that the new plate is correct.",
-    aes: "Pido disculpas y me llevo el plato. Aviso a la cocina enseguida y le digo al visitante cuánto va a tardar. Después reviso que el plato nuevo esté correcto.",
-    words: [["apologize", "a-PÓ-lo-yais"], ["kitchen", "KÍ-chen"], ["right away", "rait a-UÉI"]] },
-  { id: "q21", sec: "sit", q: "A guest tells you they have a food allergy. What do you do?", qes: "Un visitante te dice que tiene una alergia alimentaria. ¿Qué haces?",
-    also: ["What would you do if a child is allergic to peanuts?"],
-    a: "Food allergies are very serious, so safety comes first. I never guess. I tell my leader or the chef right away, and we follow the allergy process.",
-    aes: "Las alergias son muy serias, así que la seguridad va primero. Nunca adivino. Aviso a mi líder o al chef de inmediato y seguimos el procedimiento de alergias.",
-    words: [["allergy", "Á-ler-yi"], ["serious", "SÍ-ri-os"], ["guess", "GUES"], ["process", "PRÓ-ses"]],
-    tip: "La oferta de trabajo menciona alergias: los restaurantes de Disney se las toman muy en serio. Aquí safety first es la respuesta perfecta." },
-  { id: "q22", sec: "sit", q: "You see a spill on the floor. What do you do?", qes: "Ves algo derramado en el piso. ¿Qué haces?",
-    also: ["What would you do if you see something dangerous?"],
-    a: "Safety first. I stay next to the spill so nobody slips, and I clean it or ask a coworker for help right away.",
-    aes: "La seguridad primero. Me quedo junto a lo derramado para que nadie se resbale, y lo limpio o le pido ayuda a un compañero de inmediato.",
-    words: [["spill", "SPIL"], ["slips", "SLIPS"], ["coworker", "KÓU-uor-ker"]] },
-  { id: "q23", sec: "sit", q: "A guest asks you a question and you don't know the answer. What do you do?", qes: "Un visitante te pregunta algo y no sabes la respuesta. ¿Qué haces?",
-    also: [],
-    a: "I never just say 'I don't know.' I say, 'Great question! Let me find out for you.' Then I ask a coworker or my leader.",
-    aes: "Nunca digo solo 'no sé'. Digo: '¡Buena pregunta! Déjeme averiguarlo.' Luego le pregunto a un compañero o a mi líder.",
-    words: [["find out", "FÁIND áut"]],
-    tip: "En Disney evitan decir 'I don't know' a secas. Esta respuesta demuestra que conoces la cultura." },
+  { id: "q13", sec: "exp", q: "Do you have experience as a Medical Assistant?", qes: "¿Tienes experiencia como Medical Assistant?",
+    also: ["I see you don't have medical experience yet. Can you tell me about that?"],
+    a: "I don't have paid experience as a Medical Assistant yet. But I'm certified, I completed hands-on training, and I learn very fast. In my other jobs, I was always responsible and careful, and I'm ready to learn your procedures.",
+    aes: "Todavía no tengo experiencia pagada como Medical Assistant. Pero estoy certificada, hice entrenamiento práctico y aprendo muy rápido. En mis otros trabajos siempre fui responsable y cuidadosa, y estoy lista para aprender sus procedimientos.",
+    words: [["hands-on", "JÉNDS-on"], ["training", "TRÉI-ning"], ["experience", "eks-PÍ-ri-ens"]],
+    tip: "La vacante dice que la experiencia es preferida, no obligatoria. No te disculpes: di la verdad y pasa enseguida a lo que sí tienes." },
+  { id: "q14", sec: "exp", q: "Tell me about your phlebotomy training.", qes: "Cuéntame de tu entrenamiento en flebotomía.",
+    also: ["Are you comfortable drawing blood?", "Have you done venipuncture before?"],
+    a: "I completed hands-on training in blood collection. I learned to identify the patient, choose the right tubes, label the samples, and follow infection-control rules. I got my phlebotomy certification in June.",
+    aes: "Hice entrenamiento práctico en extracción de sangre. Aprendí a identificar al paciente, elegir los tubos correctos, etiquetar las muestras y seguir las normas de control de infecciones. Me certifiqué en flebotomía en junio.",
+    words: [["collection", "co-LÉK-shon"], ["tubes", "TIUBS"], ["label", "LÉI-bol"], ["samples", "SÁM-pols"], ["venipuncture", "VÉ-ni-ponk-chur"]],
+    tip: "Venipuncture es lo mismo que blood draw: sacar sangre de la vena. Si te preguntan cuántas extracciones hiciste en la práctica, di el número real." },
+  { id: "q15", sec: "exp", q: "What did you learn in your Medical Assistant training?", qes: "¿Qué aprendiste en tu entrenamiento de Medical Assistant?",
+    also: ["What clinical skills do you have?"],
+    a: "I learned to take vital signs, do EKGs, and prepare patients for exams. I also learned to help with injections, keep medical records, and protect patient privacy under HIPAA.",
+    aes: "Aprendí a tomar signos vitales, hacer electrocardiogramas y preparar a los pacientes para los exámenes. También aprendí a ayudar con inyecciones, llevar registros médicos y proteger la privacidad del paciente según HIPAA.",
+    words: [["vital signs", "VÁI-tol SÁINS"], ["EKG", "I-KEI-YI"], ["injections", "in-YÉK-shons"], ["HIPAA", "JÍ-pa"], ["privacy", "PRÁI-va-si"]] },
+  { id: "q16", sec: "exp", q: "Do you have any experience caring for people?", qes: "¿Tienes experiencia cuidando personas?",
+    also: ["Tell me about a job where you helped people."],
+    a: "Yes. I worked as a Youth Care Worker in a shelter in El Paso. I took care of young people every day, and I took them to their medical appointments. I learned to be patient and calm.",
+    aes: "Sí. Trabajé como Youth Care Worker en un albergue en El Paso. Cuidaba a jóvenes todos los días y los llevaba a sus citas médicas. Aprendí a ser paciente y tranquila.",
+    words: [["shelter", "SHÉL-ter"], ["appointments", "a-PÓINT-ments"], ["El Paso", "el PÁ-sou"]],
+    tip: "Es tu experiencia más cercana a la salud. Úsala también si te preguntan por pacientes difíciles o por trabajo en equipo." },
+  { id: "q17", sec: "exp", q: "Are you comfortable with computers and electronic medical records?", qes: "¿Te manejas bien con computadoras y registros médicos electrónicos?",
+    also: ["Have you used an EMR system?", "Do you know Microsoft Office?"],
+    a: "Yes. I use Microsoft Office, and I learned medical records in my training. In my warehouse job, I used company systems every day to scan and check orders. In the notary office, I worked with documents every day, so I'm very careful with data.",
+    aes: "Sí. Uso Microsoft Office y aprendí registros médicos en mi entrenamiento. En la bodega usaba los sistemas de la empresa todos los días para escanear y revisar pedidos. En la notaría trabajaba con documentos todos los días, así que soy muy cuidadosa con los datos.",
+    words: [["records", "RÉ-cords"], ["warehouse", "UÉR-jaus"], ["data", "DÉI-ta"], ["EMR", "I-EM-AR"]],
+    tip: "La vacante exige Word, Excel, PowerPoint y Outlook, y menciona el EMR, que es el sistema de fichas médicas electrónicas." },
+
+  { id: "q18", sec: "sit", q: "A patient is nervous about the needle. What do you do?", qes: "Un paciente tiene miedo a la aguja. ¿Qué haces?",
+    also: ["How do you help an anxious patient?"],
+    a: "I stay calm and smile. I explain each step in simple words. I tell the patient it's OK to look away, and I talk with them to help them relax.",
+    aes: "Mantengo la calma y sonrío. Explico cada paso con palabras sencillas. Le digo al paciente que puede mirar hacia otro lado y converso con él para que se relaje.",
+    words: [["needle", "NÍ-dol"], ["anxious", "ÉNK-shos"], ["look away", "luk a-UÉI"], ["relax", "ri-LÁKS"]] },
+  { id: "q19", sec: "sit", q: "What would you do if a patient feels dizzy or faints during a blood draw?", qes: "¿Qué harías si un paciente se marea o se desmaya durante la extracción?",
+    also: ["A patient faints. What do you do?"],
+    a: "Patient safety comes first. I stop the draw right away. I remove the tourniquet and the needle, and I apply pressure. I keep the patient safe so they don't fall, and I call the nurse or the doctor.",
+    aes: "La seguridad del paciente va primero. Detengo la extracción de inmediato. Quito el torniquete y la aguja, y hago presión. Cuido que el paciente no se caiga y llamo a la enfermera o al médico.",
+    words: [["dizzy", "DÍ-si"], ["faints", "FÉINTS"], ["tourniquet", "TÉR-ni-ket"], ["pressure", "PRÉ-sher"], ["nurse", "NERS"]],
+    tip: "Es una pregunta clásica de flebotomía. La clave es el orden: detener, quitar torniquete y aguja, proteger al paciente, pedir ayuda." },
+  { id: "q20", sec: "sit", q: "How would you handle a patient who is upset?", qes: "¿Qué harías con un paciente molesto?",
+    also: ["What do you do if a patient complains about waiting?", "How do you deal with a difficult patient?"],
+    a: "I stay calm and I listen. I say, 'I'm sorry. Let me help you.' I try to fix the problem, and if I can't, I tell my supervisor. Many patients here are tired or worried, so I'm always kind.",
+    aes: "Mantengo la calma y escucho. Digo: 'Lo siento. Déjeme ayudarle.' Intento resolver el problema y, si no puedo, aviso a mi supervisora. Muchos pacientes aquí están cansados o preocupados, así que siempre soy amable.",
+    words: [["upset", "ap-SÉT"], ["supervisor", "SU-per-vai-sor"], ["worried", "UÓ-rid"]] },
+  { id: "q21", sec: "sit", q: "What would you do if you made a mistake?", qes: "¿Qué harías si cometes un error?",
+    also: ["Tell me about a time you made a mistake."],
+    a: "I tell my supervisor right away. Patient safety is more important than anything. Then I help fix it, and I learn from it so it doesn't happen again.",
+    aes: "Le aviso a mi supervisora de inmediato. La seguridad del paciente es más importante que cualquier cosa. Después ayudo a corregirlo y aprendo para que no vuelva a pasar.",
+    words: [["mistake", "mis-TÉIK"], ["right away", "rait a-UÉI"], ["again", "a-GUÉN"]],
+    tip: "En salud valoran mucho a quien reporta sus errores. Nunca digas que no cometes errores." },
+  { id: "q22", sec: "sit", q: "Someone calls and asks about a patient's results. What do you do?", qes: "Alguien llama y pregunta por los resultados de un paciente. ¿Qué haces?",
+    also: ["How do you protect patient information?", "What is HIPAA?"],
+    a: "I don't share any information. Patient information is private, and that is the law under HIPAA. I follow the office policy, and I only share information with authorized people.",
+    aes: "No comparto ninguna información. La información del paciente es privada y así lo exige la ley HIPAA. Sigo la política de la oficina y solo comparto información con personas autorizadas.",
+    words: [["results", "ri-SÓLTS"], ["private", "PRÁI-vet"], ["authorized", "Ó-zo-raist"], ["policy", "PÓ-li-si"]],
+    tip: "Aquí tu experiencia en la notaría suma: ya trabajaste con información confidencial." },
+  { id: "q23", sec: "sit", q: "How do you handle a very busy day?", qes: "¿Cómo manejas un día muy ocupado?",
+    also: ["How do you prioritize your tasks?", "How do you work under pressure?"],
+    a: "I stay organized and calm. I do the most urgent things first, and I communicate with my team. If I need help, I ask.",
+    aes: "Me mantengo organizada y tranquila. Hago primero lo más urgente y me comunico con mi equipo. Si necesito ayuda, la pido.",
+    words: [["organized", "ÓR-ga-naist"], ["urgent", "ÉR-yent"], ["prioritize", "prai-Ó-ri-tais"]] },
   { id: "q24", sec: "sit", q: "Tell me about a time you worked as part of a team.", qes: "Cuéntame de una vez que trabajaste en equipo.",
     also: ["Give me an example of teamwork."],
-    a: "In my current job, we paint apartments as a team. One day we had to finish three apartments in one day. We divided the work, we helped each other, and we finished on time.",
-    aes: "En mi trabajo actual pintamos apartamentos en equipo. Un día teníamos que terminar tres apartamentos en un solo día. Dividimos el trabajo, nos ayudamos y terminamos a tiempo.",
+    a: "In my current job, we paint as a team. One day, we had to finish a big job in one day. We divided the work, we helped each other, and we finished on time.",
+    aes: "En mi trabajo actual pintamos en equipo. Un día teníamos que terminar un trabajo grande en un solo día. Dividimos el trabajo, nos ayudamos y terminamos a tiempo.",
     words: [["divided", "di-VÁI-ded"], ["each other", "ICH Á-der"]],
-    tip: "Cambia los detalles por un caso real tuyo. Lo importante es la forma: problema, qué hicieron y resultado." },
-  { id: "q25", sec: "sit", q: "How do you handle stress or a very busy day?", qes: "¿Cómo manejas el estrés o un día muy ocupado?",
-    also: ["How do you work under pressure?"],
-    a: "I stay calm, and I do one thing at a time. I focus on the guest in front of me, and I talk with my team. When we work together, everything is easier.",
-    aes: "Mantengo la calma y hago una cosa a la vez. Me enfoco en el visitante que tengo enfrente y hablo con mi equipo. Cuando trabajamos juntos, todo es más fácil.",
-    words: [["pressure", "PRÉ-sher"], ["focus", "FÓU-kus"], ["busy", "BÍ-si"]] },
-  { id: "q26", sec: "sit", q: "What would you do if you disagree with a coworker?", qes: "¿Qué harías si no estás de acuerdo con un compañero?",
-    also: ["Tell me about a conflict with a coworker."],
-    a: "I talk to the person in private and with respect. I listen to their side, and we look for a solution together. If we can't agree, I ask my leader for help. The guests should never see the problem.",
-    aes: "Hablo con la persona en privado y con respeto. Escucho su punto de vista y buscamos una solución juntos. Si no nos ponemos de acuerdo, le pido ayuda a mi líder. Los visitantes nunca deben ver el problema.",
-    words: [["private", "PRÁI-vet"], ["respect", "ris-PÉKT"], ["agree", "a-GRÍ"]],
-    tip: "La última frase es muy de Disney: los problemas se resuelven backstage (detrás de escena), nunca frente a los visitantes." },
-  { id: "q27", sec: "sit", q: "A family is celebrating a birthday at your restaurant. What would you do?", qes: "Una familia celebra un cumpleaños en tu restaurante. ¿Qué harías?",
-    also: ["How would you create a magical moment for a guest?"],
-    a: "I say 'Happy birthday!' with a big smile, and I tell my team so we can make it special. Small details create big magic.",
-    aes: "Digo '¡Feliz cumpleaños!' con una gran sonrisa y aviso a mi equipo para hacerlo especial. Los pequeños detalles crean mucha magia.",
-    words: [["celebrating", "SÉ-le-brei-ting"], ["magic", "MÁ-yik"]] },
-  { id: "q28", sec: "sit", q: "What would you do if you see a lost child?", qes: "¿Qué harías si ves a un niño perdido?",
-    also: [],
-    a: "Safety first. I stay with the child, I stay calm, and I call my leader or security right away. I never leave the child alone.",
-    aes: "La seguridad primero. Me quedo con el niño, mantengo la calma y llamo a mi líder o a seguridad de inmediato. Nunca dejo al niño solo.",
-    words: [["security", "si-KIÚ-ri-ti"], ["alone", "a-LÓUN"], ["child", "CHÁILD"]] },
+    tip: "Cambia los detalles por un caso real tuyo. Lo importante es la forma: qué pasó, qué hicieron y cómo terminó." },
 
-  { id: "q29", sec: "horario", q: "What is your availability?", qes: "¿Cuál es tu disponibilidad?",
-    also: ["Can you work weekends and holidays?", "Can you work early mornings or late nights?"],
-    a: "I'm very flexible. I can work mornings, nights, weekends and holidays.",
-    aes: "Soy muy flexible. Puedo trabajar en las mañanas, en las noches, fines de semana y feriados.",
-    words: [["availability", "a-vei-la-BÍ-li-ti"], ["flexible", "FLÉK-si-bol"], ["holidays", "JÓ-li-deis"], ["weekends", "UÍK-ends"]],
-    tip: "En restaurantes los horarios cambian cada semana y la flexibilidad es de lo que más pesa al contratar. Empieza siempre por aquí." },
-  { id: "q30", sec: "horario", q: "Is there any day or time you can't work?", qes: "¿Hay algún día u horario en que no puedas trabajar?",
-    also: ["Do you have any restrictions on your schedule?"],
-    a: "I only have one family appointment every two weeks. I know the dates in advance, so I can request those days early or trade shifts with a coworker. It won't be a problem.",
-    aes: "Solo tengo una cita familiar cada dos semanas. Sé las fechas con anticipación, así que puedo pedir esos días con tiempo o cambiar turnos con un compañero. No será un problema.",
-    words: [["appointment", "a-PÓINT-ment"], ["in advance", "in ad-VÁNS"], ["shifts", "SHIFTS"], ["schedule", "SKÉ-yul"]],
-    tip: "Úsala solo si te preguntan por restricciones. No tienes que dar detalles médicos: family appointment es suficiente y es verdad. Lo de alternar una semana de día y otra de tarde conviene hablarlo con tu leader después de que te contraten, no en esta entrevista." },
-  { id: "q31", sec: "horario", q: "Are you looking for full-time or part-time?", qes: "¿Buscas tiempo completo o medio tiempo?",
-    also: ["How many hours do you want to work?"],
-    a: "I'm looking for a full-time position. I'm ready to work hard and grow with the company.",
-    aes: "Busco un puesto de tiempo completo. Estoy lista para trabajar duro y crecer con la empresa.",
-    words: [["position", "po-SÍ-shon"], ["full-time", "FUL-taim"]],
-    alt: { label: "Si solo ofrecen part-time", en: "I'm open to part-time, but my goal is full-time.", es: "Acepto medio tiempo, pero mi meta es tiempo completo." } },
-  { id: "q32", sec: "horario", q: "Do you have reliable transportation?", qes: "¿Tienes un medio de transporte confiable?",
-    also: ["How will you get to work?"],
-    a: "Yes, I have my own car. I will always arrive on time.",
-    aes: "Sí, tengo carro propio. Siempre llegaré a tiempo.",
-    words: [["reliable", "ri-LÁI-a-bol"], ["transportation", "trans-por-TÉI-shon"]] },
-  { id: "q33", sec: "horario", q: "Can you stand for long periods and lift heavy things?", qes: "¿Puedes estar de pie mucho tiempo y cargar cosas pesadas?",
-    also: ["This job is very physical. Is that OK for you?"],
-    a: "Yes. In my current job, I stand all day, and I carry heavy paint and tools. I'm used to physical work.",
-    aes: "Sí. En mi trabajo actual estoy de pie todo el día y cargo pintura y herramientas pesadas. Estoy acostumbrada al trabajo físico.",
-    words: [["heavy", "JÉ-vi"], ["tools", "TULS"], ["periods", "PÍ-ri-ods"]] },
-  { id: "q34", sec: "horario", q: "Is it OK for you to work outside in the heat?", qes: "¿Te parece bien trabajar afuera con calor?",
-    also: [],
-    a: "Yes. I live in Florida, so I know the heat! I drink water, and I keep a positive attitude.",
-    aes: "Sí. Vivo en Florida, ¡así que conozco el calor! Tomo agua y mantengo una actitud positiva.",
-    words: [["heat", "JIIT"], ["attitude", "Á-ti-tud"]] },
-  { id: "q35", sec: "horario", q: "When can you start?", qes: "¿Cuándo puedes empezar?",
-    also: [],
+  { id: "q25", sec: "tec", q: "How do you identify a patient before a blood draw?", qes: "¿Cómo identificas a un paciente antes de sacarle sangre?",
+    also: ["What are the two patient identifiers?"],
+    a: "I ask the patient to say their full name and date of birth. Then I check that they match the order and the labels.",
+    aes: "Le pido al paciente que diga su nombre completo y su fecha de nacimiento. Después reviso que coincidan con la orden y las etiquetas.",
+    words: [["identify", "ai-DÉN-ti-fai"], ["date of birth", "deit ov BERZ"], ["match", "MACH"]],
+    tip: "Se le pide al paciente que diga sus datos; no se le pregunta '¿usted es María?', porque podría decir que sí sin escuchar." },
+  { id: "q26", sec: "tec", q: "Walk me through a blood draw.", qes: "Explícame paso a paso una extracción de sangre.",
+    also: ["What are the steps of venipuncture?"],
+    a: "First, I check the order and identify the patient. I wash my hands and put on gloves. I put on the tourniquet and find a good vein. I clean the area with alcohol and let it dry. I insert the needle and fill the tubes in the correct order. I remove the tourniquet, remove the needle, and apply pressure. Then I put on a bandage and label the tubes in front of the patient.",
+    aes: "Primero reviso la orden e identifico al paciente. Me lavo las manos y me pongo guantes. Pongo el torniquete y busco una buena vena. Limpio la zona con alcohol y dejo que se seque. Inserto la aguja y lleno los tubos en el orden correcto. Quito el torniquete, saco la aguja y hago presión. Después pongo una curita y etiqueto los tubos frente al paciente.",
+    words: [["gloves", "GLOVS"], ["vein", "VÉIN"], ["alcohol", "ÁL-co-jol"], ["insert", "in-SÉRT"], ["bandage", "BÁN-dich"]],
+    tip: "Primero quitas el torniquete y después la aguja. Las etiquetas siempre se ponen frente al paciente." },
+  { id: "q27", sec: "tec", q: "What is the order of draw?", qes: "¿Cuál es el orden de llenado de los tubos?",
+    also: ["Which tubes do you fill first?"],
+    a: "Blood cultures first. Then light blue, red or gold, green, lavender, and gray.",
+    aes: "Primero los hemocultivos. Luego celeste, rojo o dorado, verde, lila y gris.",
+    words: [["cultures", "KÓL-churs"], ["light blue", "lait BLU"], ["gold", "GÓULD"], ["lavender", "LÁ-ven-der"], ["gray", "GREI"]],
+    tip: "Es el orden estándar de los laboratorios en EE. UU. Si no te acuerdas en el momento, di: I always check the order of draw chart." },
+  { id: "q28", sec: "tec", q: "What do you do if you can't find a vein, or the first try doesn't work?", qes: "¿Qué haces si no encuentras la vena o el primer intento falla?",
+    also: ["What if you miss the vein?"],
+    a: "I check the other arm, and I can use a warm compress to help find the vein. I don't try more than two times. If I still can't get it, I ask a coworker or my supervisor for help.",
+    aes: "Reviso el otro brazo y puedo usar una compresa tibia para que se note la vena. No lo intento más de dos veces. Si igual no puedo, le pido ayuda a una compañera o a mi supervisora.",
+    words: [["warm compress", "UÓRM KÓM-pres"], ["coworker", "KÓU-uor-ker"], ["arm", "ARM"]],
+    tip: "La regla de no más de dos intentos por persona muestra que piensas primero en el paciente." },
+  { id: "q29", sec: "tec", q: "What are normal vital signs for an adult?", qes: "¿Cuáles son los signos vitales normales en un adulto?",
+    also: ["What is a normal blood pressure?"],
+    a: "Blood pressure under 120 over 80. Pulse between 60 and 100. Breathing between 12 and 20 per minute. And temperature around 98.6 degrees.",
+    aes: "Presión arterial bajo 120 sobre 80. Pulso entre 60 y 100. Respiración entre 12 y 20 por minuto. Y temperatura alrededor de 98,6 grados Fahrenheit, que son 37 °C.",
+    words: [["blood pressure", "BLOD PRÉ-sher"], ["pulse", "POLS"], ["breathing", "BRÍ-ding"], ["degrees", "di-GRÍS"]],
+    tip: "En EE. UU. la temperatura es en Fahrenheit: 98.6 °F son 37 °C. Ojo: 120 over 80 se dice ‘one twenty over eighty’." },
+
+  { id: "q30", sec: "log", q: "This position is Monday to Friday, 8 to 5. Does that work for you?", qes: "Este puesto es de lunes a viernes, de 8 a 5. ¿Te funciona?",
+    also: ["What is your availability?", "Can you work overtime or some weekends?"],
+    a: "Yes, that works for me. I can work Monday to Friday, from 8 to 5. I can also work overtime or a weekend when the clinic needs it.",
+    aes: "Sí, me funciona. Puedo trabajar de lunes a viernes, de 8 a 5. También puedo hacer horas extra o algún fin de semana cuando la clínica lo necesite.",
+    words: [["overtime", "ÓU-ver-taim"], ["weekend", "UÍK-end"], ["availability", "a-vei-la-BÍ-li-ti"]],
+    tip: "La vacante dice lunes a viernes de 8:00 a 5:00, con horas extra ocasionales y algún fin de semana. Responde según tu realidad.",
+    alt: { label: "Si tienes una cita fija", en: "Yes. I only have one family appointment every two weeks. I know the dates in advance, so I can plan around it.", es: "Sí. Solo tengo una cita familiar cada dos semanas. Sé las fechas con anticipación, así que puedo organizarme." } },
+  { id: "q31", sec: "log", q: "This job requires travel to other clinics. Is that OK?", qes: "Este trabajo requiere viajar a otras clínicas. ¿Te parece bien?",
+    also: ["Do you have a valid Florida driver's license?", "Do you have reliable transportation?"],
+    a: "Yes. I have a valid Florida driver's license and my own car. I'm happy to travel to other clinics when needed.",
+    aes: "Sí. Tengo licencia de conducir de Florida vigente y carro propio. Con gusto viajo a otras clínicas cuando haga falta.",
+    words: [["valid", "VÁ-lid"], ["driver's license", "DRÁI-vers LÁI-sens"], ["travel", "TRÁ-vel"]],
+    tip: "La vacante dice que se viaja menos del 25 % del tiempo." },
+  { id: "q32", sec: "log", q: "What are your salary expectations?", qes: "¿Cuál es tu expectativa de sueldo?",
+    also: ["How much are you looking to make?", "What pay rate are you looking for?"],
+    a: "I'm looking for 17 to 19 dollars per hour, but I'm flexible. The benefits and the chance to grow are also very important to me.",
+    aes: "Busco entre 17 y 19 dólares la hora, pero soy flexible. Los beneficios y la posibilidad de crecer también son muy importantes para mí.",
+    words: [["salary", "SÁ-la-ri"], ["expectations", "eks-pek-TÉI-shons"], ["per hour", "per ÁUER"], ["benefits", "BÉ-ne-fits"]],
+    tip: "Es lo mismo que pusiste en la solicitud. Mantén el mismo número para que todo cuadre." },
+  { id: "q33", sec: "log", q: "Do you have a current BLS certification?", qes: "¿Tienes la certificación BLS vigente?",
+    also: ["Do you have CPR?"],
+    a: "Not yet. I know FCS provides the BLS course in the first 30 days, and I'm ready to take it.",
+    aes: "Todavía no. Sé que FCS da el curso de BLS en los primeros 30 días y estoy lista para hacerlo.",
+    words: [["BLS", "BI-EL-ES"], ["CPR", "SI-PI-AR"], ["provides", "pro-VÁIDS"]],
+    tip: "Si antes del viernes te inscribes en un curso de BLS de la American Heart Association, usa la otra respuesta. Suma mucho.",
+    alt: { label: "Si ya te inscribiste en un curso", en: "Not yet, but I'm already scheduled for the American Heart Association BLS class.", es: "Todavía no, pero ya estoy inscrita en el curso de BLS de la American Heart Association." } },
+  { id: "q34", sec: "log", q: "Are you OK with a background check, a drug test, and the required vaccines, including the flu shot?", qes: "¿Estás de acuerdo con la revisión de antecedentes, el examen de drogas y las vacunas obligatorias, incluida la de la influenza?",
+    also: ["This offer requires a background check and a drug screen. Is that OK?"],
+    a: "Yes, that's no problem.",
+    aes: "Sí, no hay problema.",
+    words: [["background check", "BÁK-graund chek"], ["vaccines", "vak-SÍNS"], ["flu shot", "FLU shot"]],
+    tip: "Ya lo aceptaste en la solicitud. FCS también hace examen de nicotina, y su política prohíbe cigarrillos y vapeadores." },
+  { id: "q35", sec: "log", q: "When can you start?", qes: "¿Cuándo puedes empezar?",
+    also: ["If we make you an offer, when would you be available?"],
     a: "I can start in two weeks, after I give notice at my current job.",
     aes: "Puedo empezar en dos semanas, después de avisar en mi trabajo actual.",
-    words: [["notice", "NÓU-tis"]],
+    words: [["notice", "NÓU-tis"], ["available", "a-VÉI-la-bol"]],
     tip: "Avisar con dos semanas es lo normal en EE. UU. y se ve responsable.",
     alt: { label: "Si puedes empezar ya", en: "I can start right away.", es: "Puedo empezar de inmediato." } },
 
   { id: "q36", sec: "cierre", q: "Do you have any questions for me?", qes: "¿Tienes alguna pregunta para mí?",
     also: [],
-    a: "Yes, thank you. What does a normal day look like in this role? And what are the next steps?",
-    aes: "Sí, gracias. ¿Cómo es un día normal en este puesto? ¿Y cuáles son los siguientes pasos?",
-    words: [["normal day", "NÓR-mal dei"], ["next steps", "NEKST steps"]],
-    tip: "Haz siempre una o dos preguntas: demuestra interés.",
-    alt: { label: "Otra pregunta que puedes hacer", en: "What do you like most about working at Disney?", es: "¿Qué es lo que más le gusta de trabajar en Disney?" } },
+    a: "Yes, thank you. What does a typical day look like for a Medical Assistant at the Davenport office? And what are the next steps?",
+    aes: "Sí, gracias. ¿Cómo es un día típico de una Medical Assistant en la oficina de Davenport? ¿Y cuáles son los siguientes pasos?",
+    words: [["typical", "TÍ-pi-col"], ["next steps", "NEKST steps"]],
+    tip: "Haz siempre una o dos preguntas: demuestra interés. Anota lo que te responda.",
+    alt: { label: "Otra pregunta que puedes hacer", en: "What kind of training do new Medical Assistants receive?", es: "¿Qué tipo de entrenamiento reciben las Medical Assistants nuevas?" } },
   { id: "q37", sec: "cierre", q: "Is there anything else you'd like to add?", qes: "¿Hay algo más que quieras agregar?",
-    also: ["Anything else you want us to know?"],
-    a: "Just that I'm very excited about this opportunity. Thank you for your time. Have a magical day!",
-    aes: "Solo que estoy muy emocionada por esta oportunidad. Gracias por su tiempo. ¡Que tenga un día mágico!",
-    words: [["excited", "ek-SÁI-ted"], ["opportunity", "o-por-TIÚ-ni-ti"], ["magical", "MÁ-yi-col"]],
-    tip: "Have a magical day es la despedida típica de los cast members. Cierra con eso y una sonrisa." }
+    also: ["Anything else you want me to know?"],
+    a: "Just that I'm very excited about this opportunity. Thank you so much for your time, Tracy. Have a great day!",
+    aes: "Solo que estoy muy emocionada por esta oportunidad. Muchas gracias por su tiempo, Tracy. ¡Que tenga un buen día!",
+    words: [["excited", "ek-SÁI-ted"], ["opportunity", "o-por-TIÚ-ni-ti"], ["Tracy", "TRÉI-si"]],
+    tip: "Usar su nombre al despedirte se ve cercano y profesional." }
 ];
 
 const PHRASES = [
   { id: "p1", en: "Could you repeat that, please?", es: "¿Podría repetirlo, por favor?", say: "kud iú ri-PÍT dat, PLIS?" },
   { id: "p2", en: "Could you say that a little slower, please?", es: "¿Podría decirlo un poco más despacio, por favor?", say: "kud iú sei dat a LÍ-tol SLÓU-er, plis?" },
-  { id: "p3", en: "Sorry, I didn't understand. Do you mean…?", es: "Perdón, no entendí. ¿Se refiere a…?", say: "SÓ-ri, ai DÍ-dent an-der-STÁND. du iú MIIN…?", tip: "Después de 'Do you mean' repite con tus palabras lo que entendiste; ellos te confirman." },
-  { id: "p4", en: "That's a great question. Let me think for a second.", es: "Muy buena pregunta. Déjeme pensar un segundo.", say: "dats a GREIT KUÉS-chon. let mi ZINK for a SÉ-kond." },
-  { id: "p5", en: "Nice to meet you. Thank you for having me.", es: "Mucho gusto. Gracias por recibirme.", say: "NAIS tu MIIT iu. ZENK iu for JÁ-ving mi." },
-  { id: "p6", en: "I'm a little nervous, but I'm very excited to be here.", es: "Estoy un poco nerviosa, pero muy emocionada de estar aquí.", say: "aim a LÍ-tol NÉR-vos, bot aim VÉ-ri ek-SÁI-ted tu bi JÍ-ar." },
-  { id: "p7", en: "Can you hear me well?", es: "¿Me escucha bien? (si es por video)", say: "ken iú JÍ-ar mi UÉL?" },
-  { id: "p8", en: "Thank you for your time. Have a magical day!", es: "Gracias por su tiempo. ¡Que tenga un día mágico!", say: "ZENK iu for ior TAIM. jav a MÁ-yi-col DEI!" }
+  { id: "p3", en: "Sorry, I didn't understand. Do you mean…?", es: "Perdón, no entendí. ¿Se refiere a…?", say: "SÓ-ri, ai DÍ-dent an-der-STÁND. du iú MIIN…?", tip: "Después de 'Do you mean' repite con tus palabras lo que entendiste; ella te confirma." },
+  { id: "p4", en: "Could you type that in the chat, please?", es: "¿Podría escribirlo en el chat, por favor?", say: "kud iú TAIP dat in de CHAT, plis?", tip: "Muy útil en Teams para nombres, fechas, direcciones o correos." },
+  { id: "p5", en: "That's a great question. Let me think for a second.", es: "Muy buena pregunta. Déjeme pensar un segundo.", say: "dats a GREIT KUÉS-chon. let mi ZINK for a SÉ-kond." },
+  { id: "p6", en: "Hi Tracy, nice to meet you. Thank you for calling me.", es: "Hola Tracy, mucho gusto. Gracias por llamarme.", say: "jai TRÉI-si, NAIS tu MIIT iu. ZENK iu for CÓ-ling mi." },
+  { id: "p7", en: "I'm a little nervous, but I'm very excited to be here.", es: "Estoy un poco nerviosa, pero muy emocionada de estar aquí.", say: "aim a LÍ-tol NÉR-vos, bot aim VÉ-ri ek-SÁI-ted tu bi JÍ-ar." },
+  { id: "p8", en: "Can you hear me well?", es: "¿Me escucha bien?", say: "ken iú JÍ-ar mi UÉL?" },
+  { id: "p9", en: "Sorry, the connection is bad. Could you repeat the question?", es: "Perdón, la conexión está mala. ¿Podría repetir la pregunta?", say: "SÓ-ri, de co-NÉK-shon is BAD. kud iú ri-PÍT de KUÉS-chon?" },
+  { id: "p10", en: "Thank you for your time. Have a great day!", es: "Gracias por su tiempo. ¡Que tenga un buen día!", say: "ZENK iu for ior TAIM. jav a GREIT DEI!" }
 ];
 
-const GLOSS = [
-  ["customer", "guest", "visitante, cliente"],
-  ["employee", "cast member", "trabajador de Disney"],
-  ["boss, manager", "leader", "supervisor, jefe"],
-  ["uniform", "costume", "uniforme"],
-  ["in front of guests", "on stage", "zona donde te ven los visitantes"],
-  ["employee area", "backstage", "zona solo para trabajadores"]
+const CHECKS = [
+  { id: "c1", when: "Hoy", what: "Busca en tu Gmail la invitación de Tracy ('Prescreen Virtual Call') y márcala con una estrella para encontrarla rápido." },
+  { id: "c2", when: "Hoy", what: "Instala Microsoft Teams en el teléfono. No necesitas cuenta: el día de la llamada entras como invitada." },
+  { id: "c3", when: "Martes a jueves", what: "Practica aquí 20 minutos al día, en voz alta. Empieza por Sobre ti y Horario y logística." },
+  { id: "c4", when: "Jueves", what: "Haz una llamada de prueba por Teams con Erick: cámara, micrófono, luz y señal." },
+  { id: "c5", when: "Jueves", what: "Elige la ropa: blusa lisa, de colores tranquilos, como para un consultorio." },
+  { id: "c6", when: "Viernes 11:00", what: "Teléfono cargado, en No molestar y apoyado (no en la mano). Audífonos con micrófono si tienes." },
+  { id: "c7", when: "Viernes 11:00", what: "Lugar silencioso, con la luz de frente y fondo ordenado. Un vaso de agua, papel y lápiz." },
+  { id: "c8", when: "Viernes 11:20", what: "Abre el link de la invitación, toca Join as guest y escribe tu nombre: Lilian Jimenez. Espera en la sala." }
+];
+
+const DATA = [
+  ["Puesto", "Medical Assistant · Davenport", "JR22879"],
+  ["Entrevista", "Tracy Latarski, reclutadora", "Teams · 30 min"],
+  ["Fecha", "Viernes 6 nov 2026, 11:30 AM", "Florida (13:30 en Chile)"],
+  ["Certificación MA", "Certified Clinical & Administrative Medical Assistant (MA1)", "#737-10122 · 05/31/2025 → 05/31/2027"],
+  ["Certificación flebotomía", "Certified Phlebotomy Technician (PH1)", "#737-10207 · 06/30/2026 → 06/30/2028"],
+  ["Sueldo esperado", "$17 – $19 per hour, flexible", "Igual que en la solicitud"],
+  ["Horario del puesto", "Monday to Friday, 8 AM – 5 PM", "Horas extra y fines de semana ocasionales"],
+  ["Viajes", "Less than 25%", "Licencia de Florida vigente y carro propio"]
 ];
 
 const TIPS = [
-  { h: "Respuestas cortas", p: "Dos o tres frases bastan. Disney contrata actitud y sonrisa, no un inglés perfecto." },
-  { h: "Si no entiendes, pregunta", p: "Usa las frases salvavidas. Pedir que repitan es normal y se ve profesional." },
+  { h: "Respuestas cortas", p: "Dos o tres frases bastan. Si la reclutadora quiere más, te va a preguntar." },
+  { h: "Si no entiendes, pregunta", p: "Usa las frases salvavidas. Es mucho mejor pedir que repita que responder otra cosa." },
+  { h: "No leas", p: "Ten esta página y tu CV a mano para mirar un dato, pero no leas las respuestas: se nota. Mejor una idea con tus palabras." },
   { h: "Historias en tres pasos", p: "Qué pasó, qué hiciste y cómo terminó. Sirve para todas las preguntas que empiezan con Tell me about a time." },
-  { h: "Seguridad primero", p: "Ante cualquier caso difícil, empieza con safety first. Es la primera de las Cinco Claves." },
-  { h: "Si es por video", list: ["Prueba cámara y audio antes.", "Luz de frente, fondo ordenado.", "Teléfono en silencio.", "Conéctate 10 minutos antes."] },
-  { h: "Si es en persona", list: ["Llega 15 minutos antes.", "Ropa limpia y sencilla, tipo business casual.", "Lleva tu identificación.", "Sonríe al saludar y al despedirte."] }
+  { h: "Si se corta la llamada", list: ["Vuelve a entrar con el mismo link.", "Si no puedes, responde el correo de la invitación.", "Mantén la calma: pasa a menudo."] },
+  { h: "Después de la llamada", list: ["Anota lo que te preguntaron y los siguientes pasos.", "Revisa correo, spam y mensajes de texto todos los días.", "Contesta el mismo día a cualquier mensaje de FCS."] }
 ];
 
 const ICON_SPEAK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
@@ -530,9 +571,9 @@ const store = {
 };
 
 const state = {
-  name: store.get("ld-name", ""),
-  learned: new Set(store.get("ld-learned", [])),
-  hide: !!store.get("ld-hide", false),
+  learned: new Set(store.get("fcs-learned", [])),
+  checks: new Set(store.get("fcs-checks", [])),
+  hide: !!store.get("fcs-hide", false),
   filter: "all",
   mode: "study",
   sim: { order: [], idx: 0, text: false, answer: false }
@@ -545,15 +586,20 @@ const secTitle = Object.fromEntries(SECTIONS.map(s => [s.id, s.title]));
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
-function withName(text) {
-  const slot = '<span class="name-slot">' + esc(state.name || "tu nombre") + "</span>";
-  return esc(text).split("{name}").join(slot);
-}
-function spokenAnswer(text) {
-  if (state.name) return text.split("{name}").join(state.name);
-  return text.replace(/[^.!?]*\{name\}[^.!?]*[.!?]\s*/g, "");
-}
 function pad(n) { return String(n).padStart(2, "0"); }
+
+/* Countdown to the call */
+function renderCountdown() {
+  const el = document.getElementById("countdown");
+  const ms = CALL_AT - Date.now();
+  if (isNaN(ms)) return;
+  if (ms <= -30 * 60 * 1000) { el.textContent = "Llamada realizada"; return; }
+  if (ms <= 0) { el.textContent = "Es ahora"; return; }
+  const hours = Math.floor(ms / 3600000);
+  if (hours < 24) { el.textContent = hours < 1 ? "Falta menos de una hora" : "Faltan " + hours + (hours === 1 ? " hora" : " horas"); return; }
+  const days = Math.ceil(ms / 86400000);
+  el.textContent = "Faltan " + days + (days === 1 ? " día" : " días");
+}
 
 /* Speech */
 const synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
@@ -595,7 +641,7 @@ function speak(text, rate, btn) {
 function textFor(key) {
   const [kind, id] = key.split(":");
   if (kind === "q") return byId[id] ? byId[id].q : "";
-  if (kind === "a") return byId[id] ? spokenAnswer(byId[id].a) : "";
+  if (kind === "a") return byId[id] ? byId[id].a : "";
   if (kind === "alt") return byId[id] && byId[id].alt ? byId[id].alt.en : "";
   if (kind === "p") return phraseById[id] ? phraseById[id].en : "";
   return "";
@@ -609,9 +655,9 @@ function sayBtns(key, primaryLabel, primary) {
 /* Rendering */
 function answerHTML(q) {
   let h = '<div class="answer"><p class="label">Tu respuesta</p>';
-  h += '<p class="a-en" lang="en">' + withName(q.a) + "</p>";
+  h += '<p class="a-en" lang="en">' + esc(q.a) + "</p>";
   h += '<div class="row">' + sayBtns("a:" + q.id, "Escuchar respuesta", false) + "</div>";
-  h += '<p class="a-es">' + withName(q.aes) + "</p>";
+  h += '<p class="a-es">' + esc(q.aes) + "</p>";
   if (q.words && q.words.length) {
     h += '<div><p class="label">Cómo se dice</p><div class="words">' +
       q.words.map(w => '<span class="word"><b lang="en">' + esc(w[0]) + "</b><span>" + esc(w[1]) + "</span></span>").join("") + "</div></div>";
@@ -645,9 +691,20 @@ function ticketHTML(q, n) {
 function sectionHead(s, count, unit) {
   return '<div class="section-head"><h2>' + esc(s.title) + (count ? '<span class="n">' + count + " " + unit + "</span>" : "") + "</h2><p>" + esc(s.intro) + "</p></div>";
 }
+function consejosHTML() {
+  let h = '<div class="checks">' + CHECKS.map(c =>
+    '<label class="check" for="' + c.id + '"><input type="checkbox" id="' + c.id + '" data-check="' + c.id + '"' + (state.checks.has(c.id) ? " checked" : "") + '>' +
+    '<span><span class="when">' + esc(c.when) + '</span><span class="what">' + esc(c.what) + "</span></span></label>").join("") + "</div>";
+  h += '<div class="section-head sub-head"><h2>Tus datos a mano</h2><p>Por si te preguntan un número o una fecha. Míralos, no los leas en voz alta de corrido.</p></div>';
+  h += '<div class="data-wrap"><table class="data"><tbody>' + DATA.map(d =>
+    '<tr><th scope="row">' + esc(d[0]) + '</th><td><span lang="en">' + esc(d[1]) + '</span><br><span class="mono">' + esc(d[2]) + "</span></td></tr>").join("") + "</tbody></table></div>";
+  h += '<div class="section-head sub-head"><h2>Para recordar</h2></div>';
+  h += '<div class="tips">' + TIPS.map(t => '<div class="tipcard"><h3>' + esc(t.h) + "</h3>" +
+    (t.p ? "<p>" + esc(t.p) + "</p>" : "<ul>" + t.list.map(i => "<li>" + esc(i) + "</li>").join("") + "</ul>") + "</div>").join("") + "</div>";
+  return h;
+}
 function renderDeck() {
   const deck = document.getElementById("deck");
-  let n = 0;
   let html = "";
   SECTIONS.forEach(s => {
     html += '<section class="section" data-sec="' + s.id + '">';
@@ -659,16 +716,12 @@ function renderDeck() {
           (synth ? '<div class="row">' + sayBtns("p:" + p.id, "Escuchar", false) + "</div>" : "") + "</article>";
       });
     } else if (s.id === "consejos") {
-      html += sectionHead(s, 0, "");
-      html += '<div class="tips">' + TIPS.map(t => '<div class="tipcard"><h3>' + esc(t.h) + "</h3>" +
-        (t.p ? "<p>" + esc(t.p) + "</p>" : "<ul>" + t.list.map(i => "<li>" + esc(i) + "</li>").join("") + "</ul>") + "</div>").join("") + "</div>";
-      html += '<div class="section-head"><h2 style="font-size:1.25rem">Palabras de Disney</h2><p>Úsalas en tus respuestas: se nota que conoces la cultura.</p></div>';
-      html += '<div class="gloss-wrap"><table class="gloss"><thead><tr><th>En vez de</th><th>Di</th><th>Significa</th></tr></thead><tbody>' +
-        GLOSS.map(g => '<tr><td lang="en">' + esc(g[0]) + '</td><td lang="en">' + esc(g[1]) + "</td><td>" + esc(g[2]) + "</td></tr>").join("") + "</tbody></table></div>";
+      html += sectionHead(s, CHECKS.length, "pasos");
+      html += consejosHTML();
     } else {
       const items = QA.filter(q => q.sec === s.id);
       html += sectionHead(s, items.length, items.length === 1 ? "pregunta" : "preguntas");
-      items.forEach(q => { n = QA.indexOf(q) + 1; html += ticketHTML(q, n); });
+      items.forEach(q => { html += ticketHTML(q, QA.indexOf(q) + 1); });
     }
     html += "</section>";
   });
@@ -680,7 +733,7 @@ function renderChips() {
   const chips = document.getElementById("chips");
   const all = [{ id: "all", title: "Todo", n: QA.length }].concat(SECTIONS.map(s => ({
     id: s.id, title: s.title,
-    n: s.id === "frases" ? PHRASES.length : s.id === "consejos" ? 0 : QA.filter(q => q.sec === s.id).length
+    n: s.id === "frases" ? PHRASES.length : s.id === "consejos" ? CHECKS.length : QA.filter(q => q.sec === s.id).length
   })));
   chips.innerHTML = all.map(c => '<button type="button" class="chip" data-filter="' + c.id + '" aria-pressed="' + (state.filter === c.id) + '">' +
     esc(c.title) + (c.n ? '<span class="n">' + c.n + "</span>" : "") + "</button>").join("");
@@ -697,20 +750,23 @@ function renderProgress() {
   document.getElementById("progress-fill").style.width = Math.round(done / QA.length * 100) + "%";
 }
 
-/* Simulacro */
+/* Simulacro: the recruiter's usual questions, without the technical block */
 function shuffle(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
   return a;
 }
 function newSim() {
-  state.sim = { order: shuffle(QA.map(q => q.id)), idx: 0, text: false, answer: false };
+  const pool = QA.filter(q => q.sec !== "tec" && q.sec !== "cierre").map(q => q.id);
+  const opener = "q01";
+  const rest = shuffle(pool.filter(id => id !== opener));
+  state.sim = { order: [opener].concat(rest, ["q36", "q37"]), idx: 0, text: false, answer: false };
 }
 function renderSim() {
   const el = document.getElementById("sim");
   const sim = state.sim;
   const q = byId[sim.order[sim.idx]];
-  let h = '<div class="section-head"><h2>Simulacro</h2><p>Escucha cada pregunta como si fuera la entrevistadora, responde en voz alta y luego compara con tu respuesta. Las preguntas salen en desorden, como en la vida real.</p></div>';
+  let h = '<div class="section-head"><h2>Simulacro</h2><p>Como en la llamada real: empieza con Tell me about yourself, sigue en desorden y cierra con tus preguntas. Escucha, responde en voz alta y luego compara con tu respuesta.</p></div>';
   h += '<article class="ticket sim-card">';
   h += '<div class="ticket-head"><span class="num">Pregunta ' + pad(sim.idx + 1) + " de " + sim.order.length + " · " + esc(secTitle[q.sec]) + "</span>" + learnBtn(q.id) + "</div>";
   h += '<div class="body">';
@@ -726,7 +782,7 @@ function renderSim() {
     (sim.answer ? "" : '<button type="button" class="btn" data-sim="answer">' + ICON_EYE + "Ver respuesta</button>") + "</div>";
   if (sim.answer) h += answerHTML(q);
   h += '<div class="sim-nav"><button type="button" class="btn" data-sim="prev"' + (sim.idx === 0 ? " disabled" : "") + '>Anterior</button>' +
-    '<div class="grow"><button type="button" class="btn" data-sim="shuffle">Barajar otra vez</button>' +
+    '<div class="grow"><button type="button" class="btn" data-sim="shuffle">Empezar de nuevo</button>' +
     '<button type="button" class="btn primary" data-sim="next">' + (sim.idx === sim.order.length - 1 ? "Terminar" : "Siguiente") + "</button></div></div>";
   h += "</article>";
   el.innerHTML = h;
@@ -757,7 +813,7 @@ document.addEventListener("click", e => {
   if (t.dataset.learn) {
     const id = t.dataset.learn;
     if (state.learned.has(id)) state.learned.delete(id); else state.learned.add(id);
-    store.set("ld-learned", Array.from(state.learned));
+    store.set("fcs-learned", Array.from(state.learned));
     document.querySelectorAll('[data-learn="' + id + '"]').forEach(b => {
       const on = state.learned.has(id);
       b.setAttribute("aria-pressed", String(on));
@@ -798,24 +854,27 @@ document.addEventListener("click", e => {
   }
 });
 
-const nameInput = document.getElementById("name");
-nameInput.value = state.name;
-nameInput.addEventListener("input", () => {
-  state.name = nameInput.value.trim();
-  store.set("ld-name", state.name);
-  document.querySelectorAll(".name-slot").forEach(s => { s.textContent = state.name || "tu nombre"; });
+document.addEventListener("change", e => {
+  const box = e.target;
+  if (box.dataset && box.dataset.check) {
+    if (box.checked) state.checks.add(box.dataset.check); else state.checks.delete(box.dataset.check);
+    store.set("fcs-checks", Array.from(state.checks));
+  }
 });
+
 const hideBox = document.getElementById("hide");
 hideBox.checked = state.hide;
 hideBox.addEventListener("change", () => {
   state.hide = hideBox.checked;
-  store.set("ld-hide", state.hide);
+  store.set("fcs-hide", state.hide);
   const deck = document.getElementById("deck");
   deck.classList.toggle("hiding", state.hide);
   deck.querySelectorAll(".ticket.open").forEach(tk => tk.classList.remove("open"));
   deck.querySelectorAll("[data-reveal]").forEach(b => { b.innerHTML = ICON_EYE + "Ver respuesta"; });
 });
 
+renderCountdown();
+setInterval(renderCountdown, 60000);
 renderChips();
 renderDeck();
 renderProgress();
